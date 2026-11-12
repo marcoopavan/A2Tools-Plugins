@@ -186,6 +186,23 @@ class Conversa(unittest.TestCase):
         bot.receber(msg(7, "/qualquercoisa"))
         self.assertIn("Não conheço", tg.chamadas[-1][1]["text"])
 
+    def test_leituras_se_apresentam_pelo_nome(self):
+        import io
+        vistos = []
+
+        def falso(req, timeout=0):
+            vistos.append((req.full_url, req.get_header("User-agent")))
+            return io.BytesIO(b'{"bosses": {"111021": {"state": "up", "upSince": 1794366801}}, "itens": []}')
+        original = a.urllib.request.urlopen
+        a.urllib.request.urlopen = falso
+        try:
+            self.assertIn("111021", a.ler_lista(2405)["bosses"])
+            self.assertEqual(a.ler_novidades()["itens"], [])
+        finally:
+            a.urllib.request.urlopen = original
+        self.assertEqual(vistos[0][0], "https://cdn.a2tools.app/feeds/boss-timers/2405.json")
+        self.assertTrue(all(nome and nome.startswith("aion-avisos/") for _, nome in vistos), vistos)
+
     def test_token_nao_aparece_em_erro(self):
         tg = a.Telegram("123:SEGREDO")
         try:

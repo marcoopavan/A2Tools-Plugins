@@ -37,6 +37,9 @@ TIPOS_NOVIDADE = [
     ("nov:evento", "evento", "Eventos e conteúdo novo", "\U0001f4e3"),
 ]
 ESPERA_TELEGRAM_S = 20
+# O servidor da lista recusa o nome padrão do Python ("Python-urllib"): o bot
+# se apresenta com o próprio nome.
+QUEM_SOU = {"User-Agent": "aion-avisos/1.0 (bot pessoal de avisos do Aion 2)"}
 # O que já vem ligado: os chefes do Abismo e o Gartua. O resto aparece na
 # lista, desligado, e você liga o que quiser.
 LIGADOS_DE_FABRICA = {"boss-kaira", "boss-nahma", "boss-tamasa-argo-kaira", "boss-king", "111021",
@@ -356,17 +359,20 @@ class Telegram:
         return resposta.get("result")
 
 
+def baixar_json(url):
+    with urllib.request.urlopen(urllib.request.Request(url, headers=QUEM_SOU), timeout=20) as r:
+        return json.load(r)
+
+
 def ler_novidades(url=NOVIDADES_URL):
-    with urllib.request.urlopen(url, timeout=20) as r:
-        dado = json.load(r)
+    dado = baixar_json(url)
     if not isinstance(dado, dict) or not isinstance(dado.get("itens"), list):
         raise ValueError("o arquivo de novidades veio em outro formato")
     return dado
 
 
 def ler_lista(servidor):
-    with urllib.request.urlopen(LISTA_URL.format(servidor=int(servidor)), timeout=20) as r:
-        dado = json.load(r)
+    dado = baixar_json(LISTA_URL.format(servidor=int(servidor)))
     if not isinstance(dado, dict) or not isinstance(dado.get("bosses"), dict):
         raise ValueError("a lista veio em outro formato")
     return dado
