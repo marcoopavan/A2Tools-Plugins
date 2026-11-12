@@ -45,9 +45,9 @@
   {
    "id": "evento-recompensas-lancamento",
    "tipo": "evento",
-   "titulo": "Recompensas de lançamento: resgatar até 2 de dezembro",
-   "texto": "Segundo o PlayNews, há recompensas de lançamento para resgatar até 02/12, sem código e sem vincular a Twitch. Confira no jogo se ainda tem algo a receber.",
-   "expira": "02/12/2026",
+   "titulo": "Recompensas de lançamento: pegar no correio do jogo até 8 de dezembro",
+   "texto": "Chegam sozinhas pelo correio do jogo, sem código e sem Twitch: um baú com o mascote Pagati e mais um mascote à escolha entre quatro, e um baú com 10 Pedras Espirituais da Ressurreição, 150 poções e 200 pergaminhos. Vale para quem entrou no jogo até 01/12. Depois de 08/12 a correspondência some.",
+   "expira": "08/12/2026",
    "fonte": "https://www.playnews.gg/en/guides/aion-2-launch-rewards-how-to-claim-them-before-december-2nd",
    "visto_em": "2026-11-12",
    "ativo": true
