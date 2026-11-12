@@ -48,7 +48,9 @@ desligado. Roda na VPS. Não tem relação com a conta do jogo.
 - `/lista`: eventos e chefes do Abismo, com botão de ligar e desligar.
 - `/campo`: chefes de campo.
 - `/proximos`: o que vem a seguir.
-- `/novidades`: códigos, Drops e eventos que estão valendo.
+- `/novidades`: códigos, Drops e eventos que estão valendo e que você ainda
+  não pegou. Cada um vem com o botão "Já peguei": tocou, ele some daqui e o
+  bot não avisa mais dele. Tocou errado, o mesmo botão vira "Desfazer".
 - `/antes 15`: avisar 15 minutos antes (de fábrica, 10).
 - `/janela`: horários em que ele pode avisar. `/janela sempre` tira o limite.
 - `/pausa` e `/voltar`.

@@ -267,7 +267,84 @@ class Novidades(unittest.TestCase):
         self.assertEqual(a.novidades_a_enviar(e, {"itens": [self.NOVO]}), [])
         self.assertEqual(a.novidades_a_enviar(e, {"itens": [{"id": 1}, "x", {"id": "a", "tipo": "outro", "titulo": "t"}]}), [])
         self.assertEqual(a.novidades_a_enviar(e, None), [])
-        self.assertIn("Nada valendo", a.texto_novidades_ativas({"itens": [self.VELHO]}))
+        self.assertEqual(a.novidades_ativas(e, {"itens": [self.VELHO]}), [])
+
+    PATCH = {"id": "patch-2026-11-18", "tipo": "patch", "titulo": "Atualização de 18/11", "ativo": False}
+
+    def _toque(self, bot, dado, message_id=9):
+        bot.receber({"update_id": 2, "callback_query": {"id": "1", "data": dado, "message": {"message_id": message_id, "chat": {"id": 7}}}})
+
+    def test_ja_peguei_tira_da_lista_e_nao_avisa_mais(self):
+        agora = [br(12, 15)]                                             # fora da janela: nada foi repassado ainda
+        arq = [{"itens": [self.VELHO, self.VALENDO, self.NOVO]}]
+        bot, tg = novo_bot(agora, lista={"bosses": {}}, novidades=arq)
+        bot.receber(msg(7, "/start"))
+        bot.tique()
+        tg.chamadas.clear()
+        bot.receber(msg(7, "/novidades"))
+        envios = [d for m, d in tg.chamadas if m == "sendMessage"]
+        self.assertEqual(len(envios), 2)                                 # uma mensagem por novidade valendo
+        self.assertEqual(envios[0]["reply_markup"]["inline_keyboard"][0][0]["callback_data"], "f:evento-lancamento")
+        tg.chamadas.clear()
+        self._toque(bot, "f:evento-lancamento")
+        self.assertEqual(bot.estado["novidades_feitas"], ["evento-lancamento"])
+        troca = next(d for m, d in tg.chamadas if m == "editMessageReplyMarkup")
+        self.assertEqual(troca["reply_markup"]["inline_keyboard"][0][0]["callback_data"], "d:evento-lancamento")   # vira "Desfazer"
+        tg.chamadas.clear()
+        bot.receber(msg(7, "/novidades"))
+        textos = [d["text"] for m, d in tg.chamadas if m == "sendMessage"]
+        self.assertEqual(len(textos), 1)
+        self.assertIn("NOVO123", textos[0])
+        tg.chamadas.clear()
+        agora[0] = br(12, 20, 40)                                        # janela abriu: o que já vi em /novidades não volta
+        bot.tique()
+        self.assertEqual([d["text"] for m, d in tg.chamadas if m == "sendMessage" and "lançamento" in d["text"]], [])
+        self.assertEqual([d["text"] for m, d in tg.chamadas if m == "sendMessage" and "NOVO123" in d["text"]], [])
+
+    def test_desfazer_devolve_para_a_lista(self):
+        agora = [br(12, 21)]
+        arq = [{"itens": [self.VALENDO]}]
+        bot, tg = novo_bot(agora, lista={"bosses": {}}, novidades=arq)
+        bot.receber(msg(7, "/start"))
+        bot.tique()
+        self._toque(bot, "f:evento-lancamento")
+        tg.chamadas.clear()
+        bot.receber(msg(7, "/novidades"))
+        self.assertIn("Nada pendente", tg.chamadas[-1][1]["text"])
+        self._toque(bot, "d:evento-lancamento")
+        self.assertEqual(bot.estado["novidades_feitas"], [])
+        tg.chamadas.clear()
+        bot.receber(msg(7, "/novidades"))
+        self.assertIn("Recompensas de lançamento", tg.chamadas[-1][1]["text"])
+
+    def test_aviso_de_novidade_leva_o_botao_e_patch_nao(self):
+        agora = [br(12, 21)]
+        arq = [{"itens": [self.VELHO]}]
+        bot, tg = novo_bot(agora, lista={"bosses": {}}, novidades=arq)
+        bot.receber(msg(7, "/start"))
+        bot.tique()
+        tg.chamadas.clear()
+        arq[0] = {"itens": [self.VELHO, self.NOVO, self.PATCH]}
+        bot._novidades_em = 0
+        bot.tique()
+        envios = {d["text"].split("\n")[0]: d for m, d in tg.chamadas if m == "sendMessage"}
+        codigo = next(d for t, d in envios.items() if "NOVO123" in t)
+        patch = next(d for t, d in envios.items() if "18/11" in t)
+        self.assertEqual(codigo["reply_markup"]["inline_keyboard"][0][0]["callback_data"], "f:codigo-NOVO123")
+        self.assertNotIn("reply_markup", patch)
+        self.assertIsNone(a.botao_novidade({"id": "x" * 70, "tipo": "codigo", "titulo": "t"}))   # id grande demais para botão
+
+    def test_so_o_dono_marca_e_estado_antigo_funciona(self):
+        agora = [br(12, 21)]
+        arq = [{"itens": [self.VALENDO]}]
+        bot, tg = novo_bot(agora, lista={"bosses": {}}, novidades=arq)
+        bot.receber(msg(7, "/start"))
+        del bot.estado["novidades_feitas"]                               # estado gravado por uma versão anterior
+        bot.tique()
+        bot.receber({"update_id": 3, "callback_query": {"id": "1", "data": "f:evento-lancamento", "message": {"message_id": 9, "chat": {"id": 99}}}})
+        self.assertNotIn("novidades_feitas", bot.estado)                 # outro chat: nada muda
+        self._toque(bot, "f:evento-lancamento")
+        self.assertEqual(bot.estado["novidades_feitas"], ["evento-lancamento"])
 
     def test_sem_rede_nao_derruba(self):
         agora = [br(12, 21)]

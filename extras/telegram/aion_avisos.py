@@ -52,6 +52,7 @@ ESTADO_INICIAL = {
     "pausado": False,
     "enviados": {},
     "novidades_vistas": None,
+    "novidades_feitas": [],
     "offset": 0,
 }
 
@@ -59,7 +60,7 @@ AJUDA = (
     "Comandos:\n"
     "/lista - eventos e chefes do Abismo, com botão de ligar e desligar\n"
     "/campo - chefes de campo (Gartua e os outros)\n"
-    "/novidades - códigos, Drops da Twitch e atualizações que estão valendo\n"
+    "/novidades - códigos, Drops e eventos valendo que você ainda não pegou\n"
     "/proximos - o que vem a seguir\n"
     "/antes 10 - avisar quantos minutos antes\n"
     "/janela - em que horários posso te avisar\n"
@@ -306,17 +307,28 @@ def novidades_a_enviar(estado, arquivo):
     itens = itens_validos(arquivo)
     if estado.get("novidades_vistas") is None:
         estado["novidades_vistas"] = [i["id"] for i in itens if not i.get("ativo")]
-    vistas = set(estado["novidades_vistas"])
+    vistas = set(estado["novidades_vistas"]) | set(estado.get("novidades_feitas") or [])
     chave = {t[1]: t[0] for t in TIPOS_NOVIDADE}
     return [(i["id"], texto_novidade(i)) for i in itens
             if i["id"] not in vistas and ligado(estado, chave[i["tipo"]])]
 
 
-def texto_novidades_ativas(arquivo):
-    ativos = [i for i in itens_validos(arquivo) if i.get("ativo")]
-    if not ativos:
-        return "Nada valendo agora: nenhum código ativo e nenhuma campanha de Drops aberta, pelo que foi conferido."
-    return "\n\n".join(texto_novidade(i) for i in ativos)[:3900]
+def novidades_ativas(estado, arquivo):
+    """O que está valendo e ainda não foi marcado como pego."""
+    feitas = set(estado.get("novidades_feitas") or [])
+    return [i for i in itens_validos(arquivo) if i.get("ativo") and i["id"] not in feitas]
+
+
+NADA_PENDENTE = "Nada pendente agora: nenhum código, Drops ou evento valendo que você ainda não tenha pegado, pelo que foi conferido."
+
+
+def botao_novidade(item, feita=False):
+    """O botão "Já peguei" (ou "Desfazer") de uma novidade. Atualização do jogo não tem o que pegar."""
+    dado = ("d:" if feita else "f:") + item["id"]
+    if item["tipo"] == "patch" or len(dado.encode("utf-8")) > 64:   # limite do Telegram para o botão
+        return None
+    rotulo = "\u21a9\ufe0f Desfazer" if feita else "\u2705 Já peguei"
+    return {"inline_keyboard": [[{"text": rotulo, "callback_data": dado}]]}
 
 
 # ── teclados ──────────────────────────────────────────────────────────────
@@ -391,6 +403,26 @@ class Bot:
     def dizer(self, texto, **extra):
         self.tg.chamar("sendMessage", chat_id=self.estado["dono"], text=texto, **extra)
 
+    def _dizer_novidade(self, item):
+        extra = {"disable_web_page_preview": True}
+        botao = botao_novidade(item)
+        if botao:
+            extra["reply_markup"] = botao
+        self.dizer(texto_novidade(item), **extra)
+
+    def _novidades(self):
+        if not self.novidades:
+            return self.dizer("Ainda não li o arquivo de novidades. Tente de novo em alguns minutos.")
+        ativos = novidades_ativas(self.estado, self.novidades)
+        if not ativos:
+            return self.dizer(NADA_PENDENTE)
+        vistas = self.estado.get("novidades_vistas")
+        for item in ativos[:10]:
+            self._dizer_novidade(item)
+            if isinstance(vistas, list) and item["id"] not in vistas:   # já mostrei: não repasso de novo depois
+                vistas.append(item["id"])
+        self._salvar(self.estado)
+
     # comandos e botões
     def receber(self, update):
         if "callback_query" in update:
@@ -419,7 +451,7 @@ class Bot:
         elif comando == "/campo":
             self.dizer("Chefes de campo. Toque para ligar ou desligar:", reply_markup=teclado(itens_campo(self.agenda), self.estado))
         elif comando == "/novidades":
-            self.dizer(texto_novidades_ativas(self.novidades) if self.novidades else "Ainda não li o arquivo de novidades. Tente de novo em alguns minutos.")
+            self._novidades()
         elif comando == "/proximos":
             self.dizer(texto_proximos(self.agenda, self.estado, agora, self.lista, self.erro_lista))
         elif comando == "/antes":
@@ -462,7 +494,11 @@ class Bot:
     def _botao(self, cq):
         chat = ((cq.get("message") or {}).get("chat") or {}).get("id")
         dado = cq.get("data") or ""
-        if chat != self.estado["dono"] or not dado.startswith("t:"):
+        if chat != self.estado["dono"]:
+            return
+        if dado[:2] in ("f:", "d:"):
+            return self._peguei(cq, chat, dado[2:], feita=dado[0] == "f")
+        if not dado.startswith("t:"):
             return
         item = dado[2:]
         fixos, campo = dict(itens_fixos(self.agenda)), dict(itens_campo(self.agenda))
@@ -476,6 +512,25 @@ class Bot:
         nome = fixos.get(item) or campo.get(item)
         self.tg.chamar("answerCallbackQuery", callback_query_id=cq["id"],
                        text=("Ligado: " if ligado(self.estado, item) else "Desligado: ") + nome)
+
+    def _peguei(self, cq, chat, item_id, feita):
+        """Marca (ou desmarca) uma novidade como já pega: ela sai do /novidades e não é mais repassada."""
+        if not item_id:
+            return
+        feitas = [i for i in (self.estado.get("novidades_feitas") or []) if i != item_id]
+        if feita:
+            feitas.append(item_id)
+            vistas = self.estado.get("novidades_vistas")
+            if isinstance(vistas, list) and item_id not in vistas:
+                vistas.append(item_id)
+        self.estado["novidades_feitas"] = feitas[-500:]
+        self._salvar(self.estado)
+        item = next((i for i in itens_validos(self.novidades) if i["id"] == item_id), None)
+        botao = botao_novidade(item, feita=feita) if item else None
+        self.tg.chamar("editMessageReplyMarkup", chat_id=chat, message_id=cq["message"]["message_id"],
+                       reply_markup=botao or {"inline_keyboard": []})
+        self.tg.chamar("answerCallbackQuery", callback_query_id=cq["id"],
+                       text="Marcado como pego. Não aviso mais deste." if feita else "Desmarcado. Volta a aparecer em /novidades.")
 
     # relógio
     def tique(self):
@@ -516,8 +571,9 @@ class Bot:
             self._salvar(self.estado)
         if calado or not pendentes:
             return
-        for item_id, texto in pendentes:
-            self.dizer(texto, disable_web_page_preview=True)
+        por_id = {i["id"]: i for i in itens_validos(self.novidades)}
+        for item_id, _ in pendentes:
+            self._dizer_novidade(por_id[item_id])
             self.estado["novidades_vistas"].append(item_id)
         self.estado["novidades_vistas"] = self.estado["novidades_vistas"][-500:]
         self._salvar(self.estado)
