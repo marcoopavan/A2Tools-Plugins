@@ -1,0 +1,424 @@
+{
+ "aviso": "Gerado por gerar_agenda.mjs a partir de plugins/event-timers/schedule.js. Não edite à mão.",
+ "lado": "asmodian",
+ "servidor": 2405,
+ "fuso_horas": -3,
+ "eventos": [
+  {
+   "id": "invasion-asmodian",
+   "nome": "Invasão Dimensional",
+   "tipo": "evento",
+   "onde": [
+    "Altgard"
+   ],
+   "dias": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "inicios": [
+    30,
+    90,
+    150,
+    210,
+    270,
+    330,
+    390,
+    450,
+    510,
+    570,
+    630,
+    690,
+    750,
+    810,
+    870,
+    930,
+    990,
+    1050,
+    1110,
+    1170,
+    1230,
+    1290,
+    1350,
+    1410
+   ],
+   "minutos": 13,
+   "utc": false,
+   "tambem": []
+  },
+  {
+   "id": "festival-asmodian",
+   "nome": "Shugo Festa",
+   "tipo": "evento",
+   "onde": [
+    "Altgard"
+   ],
+   "dias": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "inicios": [
+    0,
+    60,
+    120,
+    180,
+    240,
+    300,
+    360,
+    420,
+    480,
+    540,
+    600,
+    660,
+    720,
+    780,
+    840,
+    900,
+    960,
+    1020,
+    1080,
+    1140,
+    1200,
+    1260,
+    1320,
+    1380
+   ],
+   "minutos": 7,
+   "utc": false,
+   "tambem": []
+  },
+  {
+   "id": "artifact",
+   "nome": "Cerco de Artefatos",
+   "tipo": "evento",
+   "onde": [
+    "Piso Inferior de Reshanta do Caos"
+   ],
+   "dias": [
+    4,
+    6
+   ],
+   "inicios": [
+    1260
+   ],
+   "minutos": 0,
+   "utc": false,
+   "tambem": []
+  },
+  {
+   "id": "boss-kaira",
+   "nome": "Vigilante Kairah",
+   "tipo": "chefe",
+   "onde": [
+    "Piso Inferior de Reshanta do Caos"
+   ],
+   "dias": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "inicios": [
+    60,
+    240,
+    420,
+    600,
+    780,
+    960,
+    1140,
+    1320
+   ],
+   "minutos": 15,
+   "utc": false,
+   "tambem": []
+  },
+  {
+   "id": "boss-nahma",
+   "nome": "Senhor Guardião Nahma",
+   "tipo": "chefe",
+   "onde": [
+    "Piso Inferior de Reshanta do Caos"
+   ],
+   "dias": [
+    0,
+    5
+   ],
+   "inicios": [
+    1260
+   ],
+   "minutos": 15,
+   "utc": false,
+   "tambem": []
+  },
+  {
+   "id": "boss-tamasa-argo-kaira",
+   "nome": "Executor Tamasa",
+   "tipo": "chefe",
+   "onde": [
+    "Piso Inferior de Reshanta do Caos"
+   ],
+   "dias": [
+    4,
+    6
+   ],
+   "inicios": [
+    1290
+   ],
+   "minutos": 15,
+   "utc": false,
+   "tambem": [
+    "Executor Argo",
+    "Executor Kairah"
+   ]
+  },
+  {
+   "id": "boss-king",
+   "nome": "Argo, Rei dos Espíritos",
+   "tipo": "chefe",
+   "onde": [
+    "Piso Inferior de Reshanta do Caos"
+   ],
+   "dias": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "inicios": [
+    630,
+    1350
+   ],
+   "minutos": 15,
+   "utc": false,
+   "tambem": []
+  },
+  {
+   "id": "rift",
+   "nome": "Fenda Espaço-Temporal",
+   "tipo": "evento",
+   "onde": [
+    "Verteron",
+    "Altgard"
+   ],
+   "dias": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "inicios": [
+    120,
+    300,
+    480,
+    660,
+    840,
+    1020,
+    1200,
+    1380
+   ],
+   "minutos": 10,
+   "utc": false,
+   "tambem": []
+  },
+  {
+   "id": "daily",
+   "nome": "Reinício diário",
+   "tipo": "reinicio",
+   "onde": [],
+   "dias": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "inicios": [
+    420
+   ],
+   "minutos": 0,
+   "utc": true,
+   "tambem": []
+  },
+  {
+   "id": "weekly",
+   "nome": "Reinício semanal",
+   "tipo": "reinicio",
+   "onde": [],
+   "dias": [
+    3
+   ],
+   "inicios": [
+    420
+   ],
+   "minutos": 0,
+   "utc": true,
+   "tambem": []
+  }
+ ],
+ "chefes_campo": [
+  {
+   "id": "111021",
+   "nome": "Gartua Imortal",
+   "nivel": 51,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111022",
+   "nome": "Brigadeiro Lagta",
+   "nivel": 48,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111024",
+   "nome": "Dartan do Silêncio",
+   "nivel": 48,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111023",
+   "nome": "Dominador das Almas Kashapa",
+   "nivel": 48,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111013",
+   "nome": "Arconte da Alma Perdida Axios",
+   "nivel": 45,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111016",
+   "nome": "Arma de Guerra Drakan Guruta",
+   "nivel": 45,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111010",
+   "nome": "Assessor Resana",
+   "nivel": 45,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111004",
+   "nome": "Berserker Vargor",
+   "nivel": 45,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111011",
+   "nome": "Capitão de Operações Especiais Linx",
+   "nivel": 45,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111015",
+   "nome": "Carrasco Barthien",
+   "nivel": 45,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111001",
+   "nome": "Danar Derretido",
+   "nivel": 45,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111002",
+   "nome": "Guerreiro Negro Aed",
+   "nivel": 45,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111006",
+   "nome": "Guerreiro Sanguinário Lannar",
+   "nivel": 45,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111014",
+   "nome": "Hardirun Envenenado",
+   "nivel": 45,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111008",
+   "nome": "Kelpina da Onda Azul",
+   "nivel": 45,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111005",
+   "nome": "Predador Garsan",
+   "nivel": 45,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111012",
+   "nome": "Profanador Newbold",
+   "nivel": 45,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111003",
+   "nome": "Rajit Fiel",
+   "nivel": 45,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111020",
+   "nome": "Shylak Afiado",
+   "nivel": 45,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111009",
+   "nome": "Supervisor Geral Nutah",
+   "nivel": 45,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111007",
+   "nome": "Trid Enganadora",
+   "nivel": 45,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111017",
+   "nome": "Veterano Shujakan",
+   "nivel": 45,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111019",
+   "nome": "Vishwada da Escuridão",
+   "nivel": 45,
+   "onde": "Altgard"
+  },
+  {
+   "id": "111018",
+   "nome": "Visionário Karuka",
+   "nivel": 45,
+   "onde": "Altgard"
+  }
+ ]
+}

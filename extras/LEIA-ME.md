@@ -23,3 +23,8 @@ Para parar, feche a janela. Nada é instalado e nada inicia sozinho com o Window
 
 Os chefes com horário fixo (Nahma, Argo e os Executores, Kairah) não precisam
 disso: o calendário deles já vem dentro do plugin.
+
+## Avisos no celular
+
+A pasta `telegram/` tem o bot que avisa pelo Telegram, rodando na VPS. O passo a
+passo está em `telegram/LEIA-ME.md`.
