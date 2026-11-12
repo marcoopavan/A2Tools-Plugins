@@ -1982,6 +1982,24 @@ function answered(promise, what) {
   return Promise.race([promise, limit]).finally(() => clearTimeout(timer));
 }
 
+// Nossa versão: a lista compartilhada lida de um arquivo local (ver readFeed).
+// O arquivo é o JSON da lista como ela é publicada: { bosses: { <id>: {...} } }.
+// Com "server" dentro, só vale para aquele servidor.
+const LOCAL_FEED_EVERY_MS = 2 * 60_000;
+function usableLocalFeed(file, server) {
+  if (!file || typeof file !== "object" || Array.isArray(file)) return null;
+  if (!file.bosses || typeof file.bosses !== "object" || Array.isArray(file.bosses)) return null;
+  if (file.server != null && Number(file.server) !== Number(server)) return null;
+  return file;
+}
+async function localFeed(server) {
+  try {
+    return usableLocalFeed(await a2.storage.get("shared-feed"), server);
+  } catch {
+    return null;
+  }
+}
+
 let feedReading = false;
 async function readFeed() {
   if (feedReading) return;
@@ -1995,9 +2013,20 @@ async function readFeed() {
     const held = feed?.server === server ? feed.bosses : null;
     feed = { server, bosses: mergeOwn(keepNewerHp(data?.bosses || {}, held)), at: Date.now() };
   } catch {
-    feed = { server, bosses: mergeOwn(feed?.server === server ? feed.bosses || {} : {}), error: true, at: Date.now() };
+    // Nossa versão: o medidor sem rede não lê a lista compartilhada. Um script
+    // à parte pode baixá-la para plugin-data/event-timers/shared-feed.json; o
+    // plugin só lê esse arquivo do disco.
+    const local = await localFeed(server);
+    const held = feed?.server === server ? feed.bosses || {} : {};
+    feed = local
+      ? { server, bosses: mergeOwn(keepNewerHp(local.bosses, held)), at: Date.now(), local: true }
+      : { server, bosses: mergeOwn(held), error: true, at: Date.now() };
   } finally {
     feedReading = false;
+  }
+  if (feed?.local) {
+    clearTimeout(feedTimer);
+    feedTimer = setTimeout(readFeed, LOCAL_FEED_EVERY_MS);
   }
   // Sooner while it changes fast, and every few seconds while a pinned boss
   // is being waited for or fought.
