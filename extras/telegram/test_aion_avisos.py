@@ -76,6 +76,17 @@ class Janela(unittest.TestCase):
         self.assertIsNone(a.ler_faixa("noite"))
         self.assertIsNone(a.ler_faixa("25:00-01:00"))
 
+    def test_sempre_num_dia_nao_invade_o_dia_seguinte(self):
+        e = copy.deepcopy(a.ESTADO_INICIAL)
+        e["janela"]["semana"] = None                                   # semana livre, fim de semana 13:00-02:00
+        self.assertTrue(a.dentro_da_janela(e, br(13, 10), BR))         # sexta de manhã
+        self.assertFalse(a.dentro_da_janela(e, br(14, 10), BR))        # sábado de manhã: vale a faixa do sábado
+        self.assertTrue(a.dentro_da_janela(e, br(14, 14), BR))         # sábado à tarde
+        self.assertTrue(a.dentro_da_janela(e, br(16, 1, 30), BR))      # madrugada de segunda, faixa de domingo
+        e["janela"] = {"semana": [1230, 60], "fds": None}              # o contrário: fim de semana livre
+        self.assertTrue(a.dentro_da_janela(e, br(15, 10), BR))         # domingo de manhã
+        self.assertFalse(a.dentro_da_janela(e, br(16, 10), BR))        # segunda de manhã
+
 
 class Avisos(unittest.TestCase):
     def test_avisa_uma_vez_dez_minutos_antes(self):

@@ -140,8 +140,10 @@ def dentro_da_janela(estado, agora, tz):
         dia = (local - timedelta(days=atras)).date()
         chave = "fds" if dia_js(dia) in (0, 6) else "semana"
         janela = estado["janela"].get(chave)
-        if janela is None:  # "sempre"
-            return True
+        if janela is None:  # "sempre" vale para o próprio dia, não invade o seguinte
+            if atras == 0:
+                return True
+            continue
         ini, fim = janela
         comeco = datetime(dia.year, dia.month, dia.day, tzinfo=tz) + timedelta(minutes=ini)
         termino = datetime(dia.year, dia.month, dia.day, tzinfo=tz) + timedelta(minutes=fim)
