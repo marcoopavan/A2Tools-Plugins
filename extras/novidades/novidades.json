@@ -60,6 +60,56 @@
    "fonte": "https://endgametools.com/en/aion-2/news/aion-2-patch-notes-november-11",
    "visto_em": "2026-11-12",
    "ativo": false
+  },
+  {
+   "id": "drops-ludra-2026-11",
+   "tipo": "drops",
+   "titulo": "Drops da Twitch: Ludra (até 17/11)",
+   "texto": "De 04/11 a 17/11. São 14 prêmios, um a cada hora assistida, até 14 horas; os últimos são visuais (óculos com 12 horas, chapéu cônico preto com 14). Assista a qualquer canal de Aion 2 com Drops ligado e resgate na Twitch. Quem assistiu aos Drops de Halloween também só tem até 17/11 para resgatar.",
+   "expira": "17/11/2026",
+   "fonte": "https://senseos.gg/guides/aion-2/events-attendance-rewards/",
+   "visto_em": "2026-11-12",
+   "ativo": true
+  },
+  {
+   "id": "evento-ludra-checkin",
+   "tipo": "evento",
+   "titulo": "Presença da Conquista de Ludra (até 17/11)",
+   "texto": "Lista de presença com 7 prêmios: marque presença no jogo uma vez por dia, na aba de Presença. Restam poucos dias, então entre todo dia até 17/11 para pegar o máximo.",
+   "expira": "17/11/2026",
+   "fonte": "https://senseos.gg/guides/aion-2/events-attendance-rewards/",
+   "visto_em": "2026-11-12",
+   "ativo": true
+  },
+  {
+   "id": "evento-caca-a-ludra",
+   "tipo": "evento",
+   "titulo": "Caça a Ludra: título para quem derrotar o chefe (até 24/11)",
+   "texto": "Quem concluir Ludra (Normal pede nível de item 2.800; Difícil, 3.000) até a manutenção de 24/11 ganha um título. Os 20 primeiros grupos de cada região no Difícil ganham títulos especiais.",
+   "expira": "24/11/2026",
+   "fonte": "https://senseos.gg/guides/aion-2/events-attendance-rewards/",
+   "visto_em": "2026-11-12",
+   "ativo": true
+  },
+  {
+   "id": "evento-chamado-de-atreia",
+   "tipo": "evento",
+   "titulo": "Presença de 28 dias \"Atreia's Call\" (até 01/12)",
+   "texto": "Lista de presença de 28 dias: entre no jogo e pegue o prêmio do dia na aba de Presença. Dá Pedras Espirituais da Ressurreição, Energia de Od, Pergaminhos de Aprimoramento de Combate e bilhetes de conteúdo. Acaba na manutenção de 01/12 para 02/12.",
+   "expira": "01/12/2026",
+   "fonte": "https://senseos.gg/guides/aion-2/events-attendance-rewards/",
+   "visto_em": "2026-11-12",
+   "ativo": true
+  },
+  {
+   "id": "evento-rise-to-the-challenge",
+   "tipo": "evento",
+   "titulo": "Pedras da Ressurreição baratas toda semana (até 15/12)",
+   "texto": "Evento \"Rise to the Challenge\": na Loja, com os mercadores da Brisa do Vento, dá para comprar toda semana 30 Pedras Espirituais da Ressurreição por 25.000 kinah e mais 30 por 50.000. As pedras do evento somem em 16/12, então use antes.",
+   "expira": "15/12/2026",
+   "fonte": "https://senseos.gg/guides/aion-2/events-attendance-rewards/",
+   "visto_em": "2026-11-12",
+   "ativo": true
   }
  ]
 }
