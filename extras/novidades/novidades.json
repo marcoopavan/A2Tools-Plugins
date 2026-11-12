@@ -1,0 +1,65 @@
+{
+ "aviso": "Mantido pela tarefa diária 'Novidades do Aion 2'. O bot do Telegram repassa os itens novos.",
+ "atualizado": "2026-11-12",
+ "itens": [
+  {
+   "id": "codigo-TAKEFLIGHTAION2",
+   "tipo": "codigo",
+   "titulo": "Código TAKEFLIGHTAION2",
+   "texto": "4 Energias de Od, 5 Pedras Espirituais da Ressurreição e 10 Pergaminhos de Aprimoramento de Combate.",
+   "expira": "14/10/2026",
+   "fonte": "https://endgametools.com/en/aion-2/codes",
+   "visto_em": "2026-11-12",
+   "ativo": false
+  },
+  {
+   "id": "codigo-AION2SPOOKYDAEVA",
+   "tipo": "codigo",
+   "titulo": "Código AION2SPOOKYDAEVA",
+   "texto": "50 Moedas de Abóbora, 2 Energias de Od, 20 Doces de Halloween, 10 Pedras Espirituais da Ressurreição e 20 Biscoitos de Halloween.",
+   "expira": "04/11/2026",
+   "fonte": "https://endgametools.com/en/aion-2/codes",
+   "visto_em": "2026-11-12",
+   "ativo": false
+  },
+  {
+   "id": "drops-lancamento-2026-10",
+   "tipo": "drops",
+   "titulo": "Drops da Twitch: campanha de lançamento",
+   "texto": "De 05/10 a 16/10. Até 10 horas assistindo; entre os prêmios, 2 Códices da Alma: Redefinição com 6 horas.",
+   "expira": "16/10/2026",
+   "fonte": "https://www.exitlag.com/news/aion-2-twitch-drops/",
+   "visto_em": "2026-11-12",
+   "ativo": false
+  },
+  {
+   "id": "drops-halloween-2026",
+   "tipo": "drops",
+   "titulo": "Drops da Twitch: Halloween",
+   "texto": "De 28/10 a 03/11. Cinco prêmios, até 8 horas assistindo.",
+   "expira": "03/11/2026",
+   "fonte": "https://www.u4n.com/news/aion-2-halloween-twitch-drops-complete-rewards-guide.html",
+   "visto_em": "2026-11-12",
+   "ativo": false
+  },
+  {
+   "id": "evento-recompensas-lancamento",
+   "tipo": "evento",
+   "titulo": "Recompensas de lançamento: resgatar até 2 de dezembro",
+   "texto": "Segundo o PlayNews, há recompensas de lançamento para resgatar até 02/12, sem código e sem vincular a Twitch. Confira no jogo se ainda tem algo a receber.",
+   "expira": "02/12/2026",
+   "fonte": "https://www.playnews.gg/en/guides/aion-2-launch-rewards-how-to-claim-them-before-december-2nd",
+   "visto_em": "2026-11-12",
+   "ativo": true
+  },
+  {
+   "id": "patch-2026-11-11",
+   "tipo": "patch",
+   "titulo": "Atualização de 11/11",
+   "texto": "Missões de Dever passaram a dar 2.500 Pontos de Abismo; modo Difícil no Templo do Fogo e na Gruta do Chifre Feroz com Fragmento de Ariel garantido; kinah de Krao e Draupnir virou vinculado. Já está no guia.",
+   "fonte": "https://endgametools.com/en/aion-2/news/aion-2-patch-notes-november-11",
+   "visto_em": "2026-11-12",
+   "ativo": false
+  }
+ ]
+}

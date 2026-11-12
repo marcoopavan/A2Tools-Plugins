@@ -23,10 +23,11 @@ class Falso:
         return []
 
 
-def novo_bot(agora, lista=None):
+def novo_bot(agora, lista=None, novidades=None):
     tg, estado = Falso(), copy.deepcopy(a.ESTADO_INICIAL)
     bot = a.Bot(tg, AGENDA, estado, salvar=lambda e: None, agora=lambda: agora[0],
-                lista=lambda servidor: lista if lista is not None else (_ for _ in ()).throw(OSError("sem rede")))
+                lista=lambda servidor: lista if lista is not None else (_ for _ in ()).throw(OSError("sem rede")),
+                novidades=lambda: novidades[0] if novidades and novidades[0] is not None else (_ for _ in ()).throw(OSError("sem rede")))
     return bot, tg
 
 
@@ -156,7 +157,7 @@ class Conversa(unittest.TestCase):
         bot.receber(msg(7, "/start"))
         bot.receber(msg(7, "/lista"))
         teclas = tg.chamadas[-1][1]["reply_markup"]["inline_keyboard"]
-        self.assertEqual(len(teclas), len(AGENDA["eventos"]))
+        self.assertEqual(len(teclas), len(AGENDA["eventos"]) + len(a.TIPOS_NOVIDADE))
         rotulos = {t[0]["callback_data"]: t[0]["text"] for t in teclas}
         self.assertTrue(rotulos["t:boss-nahma"].startswith("\U0001f514"))        # ligado de fábrica
         self.assertTrue(rotulos["t:festival-asmodian"].startswith("\U0001f515"))  # desligado de fábrica
@@ -191,6 +192,62 @@ class Conversa(unittest.TestCase):
             tg.chamar("getMe")
         except RuntimeError as e:
             self.assertNotIn("SEGREDO", str(e))
+
+
+class Novidades(unittest.TestCase):
+    VELHO = {"id": "codigo-TAKEFLIGHTAION2", "tipo": "codigo", "titulo": "Código TAKEFLIGHTAION2", "ativo": False}
+    VALENDO = {"id": "evento-lancamento", "tipo": "evento", "titulo": "Recompensas de lançamento", "texto": "Resgate no jogo.",
+               "expira": "02/12/2026", "fonte": "https://exemplo/noticia", "ativo": True}
+    NOVO = {"id": "codigo-NOVO123", "tipo": "codigo", "titulo": "Código novo: NOVO123", "texto": "4 Energias de Od.", "ativo": True}
+
+    def test_primeira_leitura_so_manda_o_que_esta_valendo(self):
+        agora = [br(12, 21)]
+        arq = [{"itens": [self.VELHO, self.VALENDO]}]
+        bot, tg = novo_bot(agora, lista={"bosses": {}}, novidades=arq)
+        bot.receber(msg(7, "/start"))
+        tg.chamadas.clear()
+        bot.tique()
+        textos = [d["text"] for m, d in tg.chamadas if m == "sendMessage"]
+        self.assertEqual(len(textos), 1)
+        self.assertIn("Recompensas de lançamento", textos[0])
+        self.assertIn("Vale até 02/12/2026", textos[0])
+        self.assertIn("https://exemplo/noticia", textos[0])
+        bot.tique()
+        self.assertEqual(len([1 for m, _ in tg.chamadas if m == "sendMessage"]), 1)   # não repete
+
+    def test_codigo_novo_chega_e_espera_a_janela(self):
+        agora = [br(12, 15)]                                             # fora da janela
+        arq = [{"itens": [self.VELHO]}]
+        bot, tg = novo_bot(agora, lista={"bosses": {}}, novidades=arq)
+        bot.receber(msg(7, "/start"))
+        tg.chamadas.clear()
+        bot.tique()
+        arq[0] = {"itens": [self.VELHO, self.NOVO]}
+        bot._novidades_em = 0
+        bot.tique()
+        self.assertEqual([m for m, _ in tg.chamadas if m == "sendMessage"], [])       # guardado
+        agora[0] = br(12, 20, 40)                                        # janela abriu
+        bot.tique()
+        textos = [d["text"] for m, d in tg.chamadas if m == "sendMessage"]
+        self.assertEqual(len(textos), 1)
+        self.assertIn("NOVO123", textos[0])
+
+    def test_tipo_desligado_e_arquivo_ruim(self):
+        e = copy.deepcopy(a.ESTADO_INICIAL)
+        e["novidades_vistas"] = []
+        e["ligados"]["nov:codigo"] = False
+        self.assertEqual(a.novidades_a_enviar(e, {"itens": [self.NOVO]}), [])
+        self.assertEqual(a.novidades_a_enviar(e, {"itens": [{"id": 1}, "x", {"id": "a", "tipo": "outro", "titulo": "t"}]}), [])
+        self.assertEqual(a.novidades_a_enviar(e, None), [])
+        self.assertIn("Nada valendo", a.texto_novidades_ativas({"itens": [self.VELHO]}))
+
+    def test_sem_rede_nao_derruba(self):
+        agora = [br(12, 21)]
+        bot, tg = novo_bot(agora, lista={"bosses": {}}, novidades=[None])
+        bot.receber(msg(7, "/start"))
+        bot.tique()
+        bot.receber(msg(7, "/novidades"))
+        self.assertIn("Ainda não li", tg.chamadas[-1][1]["text"])
 
 
 if __name__ == "__main__":

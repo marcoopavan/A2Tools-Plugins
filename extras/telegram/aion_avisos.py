@@ -26,10 +26,21 @@ ARQ_ESTADO = os.path.join(PASTA, "estado.json")
 ARQ_TOKEN = os.path.join(PASTA, "token.txt")
 LISTA_URL = "https://cdn.a2tools.app/feeds/boss-timers/{servidor}.json"
 LISTA_A_CADA_S = 300
+# Novidades do jogo (códigos de recompensa, Drops da Twitch, atualizações): um
+# arquivo no fork do Marco, mantido por uma tarefa diária. O bot só repassa.
+NOVIDADES_URL = "https://raw.githubusercontent.com/marcoopavan/a2tools-plugins/nossa-versao/extras/novidades/novidades.json"
+NOVIDADES_A_CADA_S = 600
+TIPOS_NOVIDADE = [
+    ("nov:codigo", "codigo", "Códigos de recompensa", "\U0001f381"),
+    ("nov:drops", "drops", "Drops da Twitch", "\U0001f4fa"),
+    ("nov:patch", "patch", "Atualizações do jogo", "\U0001f6e0\ufe0f"),
+    ("nov:evento", "evento", "Eventos e conteúdo novo", "\U0001f4e3"),
+]
 ESPERA_TELEGRAM_S = 20
 # O que já vem ligado: os chefes do Abismo e o Gartua. O resto aparece na
 # lista, desligado, e você liga o que quiser.
-LIGADOS_DE_FABRICA = {"boss-kaira", "boss-nahma", "boss-tamasa-argo-kaira", "boss-king", "111021"}
+LIGADOS_DE_FABRICA = {"boss-kaira", "boss-nahma", "boss-tamasa-argo-kaira", "boss-king", "111021",
+                      "nov:codigo", "nov:drops", "nov:patch", "nov:evento"}
 ESTADO_INICIAL = {
     "dono": None,
     "ligados": {},
@@ -37,6 +48,7 @@ ESTADO_INICIAL = {
     "janela": {"semana": [20 * 60 + 30, 1 * 60], "fds": [13 * 60, 2 * 60]},
     "pausado": False,
     "enviados": {},
+    "novidades_vistas": None,
     "offset": 0,
 }
 
@@ -44,6 +56,7 @@ AJUDA = (
     "Comandos:\n"
     "/lista - eventos e chefes do Abismo, com botão de ligar e desligar\n"
     "/campo - chefes de campo (Gartua e os outros)\n"
+    "/novidades - códigos, Drops da Twitch e atualizações que estão valendo\n"
     "/proximos - o que vem a seguir\n"
     "/antes 10 - avisar quantos minutos antes\n"
     "/janela - em que horários posso te avisar\n"
@@ -256,6 +269,51 @@ def texto_proximos(agenda, estado, agora, lista, erro_lista):
     return "\n".join(linhas)
 
 
+# ── novidades ─────────────────────────────────────────────────────────────
+
+def itens_validos(arquivo):
+    """Os itens bem formados do arquivo de novidades."""
+    if not isinstance(arquivo, dict) or not isinstance(arquivo.get("itens"), list):
+        return []
+    tipos = {t[1] for t in TIPOS_NOVIDADE}
+    return [i for i in arquivo["itens"]
+            if isinstance(i, dict) and isinstance(i.get("id"), str) and i.get("tipo") in tipos
+            and isinstance(i.get("titulo"), str)]
+
+
+def texto_novidade(item):
+    marca = next(t[3] for t in TIPOS_NOVIDADE if t[1] == item["tipo"])
+    linhas = [f"{marca} {item['titulo']}"]
+    if item.get("texto"):
+        linhas.append(str(item["texto"]))
+    if item.get("expira"):
+        linhas.append(f"Vale até {item['expira']}.")
+    if item.get("fonte"):
+        linhas.append(f"Fonte: {item['fonte']}")
+    return "\n".join(linhas)[:3500]
+
+
+def novidades_a_enviar(estado, arquivo):
+    """As novidades ainda não repassadas, de tipos ligados: [(id, texto)].
+
+    Na primeira leitura, o que já estava no arquivo conta como visto, menos o
+    que ainda está valendo: assim o bot não despeja o histórico inteiro."""
+    itens = itens_validos(arquivo)
+    if estado.get("novidades_vistas") is None:
+        estado["novidades_vistas"] = [i["id"] for i in itens if not i.get("ativo")]
+    vistas = set(estado["novidades_vistas"])
+    chave = {t[1]: t[0] for t in TIPOS_NOVIDADE}
+    return [(i["id"], texto_novidade(i)) for i in itens
+            if i["id"] not in vistas and ligado(estado, chave[i["tipo"]])]
+
+
+def texto_novidades_ativas(arquivo):
+    ativos = [i for i in itens_validos(arquivo) if i.get("ativo")]
+    if not ativos:
+        return "Nada valendo agora: nenhum código ativo e nenhuma campanha de Drops aberta, pelo que foi conferido."
+    return "\n\n".join(texto_novidade(i) for i in ativos)[:3900]
+
+
 # ── teclados ──────────────────────────────────────────────────────────────
 
 def teclado(itens, estado):
@@ -267,7 +325,7 @@ def teclado(itens, estado):
 
 
 def itens_fixos(agenda):
-    return [(ev["id"], nome_completo(ev)) for ev in agenda["eventos"]]
+    return [(ev["id"], nome_completo(ev)) for ev in agenda["eventos"]] + [(t[0], t[2]) for t in TIPOS_NOVIDADE]
 
 
 def itens_campo(agenda):
@@ -298,6 +356,14 @@ class Telegram:
         return resposta.get("result")
 
 
+def ler_novidades(url=NOVIDADES_URL):
+    with urllib.request.urlopen(url, timeout=20) as r:
+        dado = json.load(r)
+    if not isinstance(dado, dict) or not isinstance(dado.get("itens"), list):
+        raise ValueError("o arquivo de novidades veio em outro formato")
+    return dado
+
+
 def ler_lista(servidor):
     with urllib.request.urlopen(LISTA_URL.format(servidor=int(servidor)), timeout=20) as r:
         dado = json.load(r)
@@ -307,10 +373,12 @@ def ler_lista(servidor):
 
 
 class Bot:
-    def __init__(self, tg, agenda, estado, salvar=salvar_estado, agora=lambda: datetime.now(timezone.utc), lista=ler_lista):
+    def __init__(self, tg, agenda, estado, salvar=salvar_estado, agora=lambda: datetime.now(timezone.utc), lista=ler_lista,
+                 novidades=ler_novidades):
         self.tg, self.agenda, self.estado = tg, agenda, estado
-        self._salvar, self._agora, self._ler_lista = salvar, agora, lista
+        self._salvar, self._agora, self._ler_lista, self._ler_novidades = salvar, agora, lista, novidades
         self.lista, self.erro_lista, self._lista_em = None, False, 0.0
+        self.novidades, self._novidades_em = None, 0.0
 
     def dizer(self, texto, **extra):
         self.tg.chamar("sendMessage", chat_id=self.estado["dono"], text=texto, **extra)
@@ -342,6 +410,8 @@ class Bot:
             self.dizer("Eventos e chefes do Abismo. Toque para ligar ou desligar:", reply_markup=teclado(itens_fixos(self.agenda), self.estado))
         elif comando == "/campo":
             self.dizer("Chefes de campo. Toque para ligar ou desligar:", reply_markup=teclado(itens_campo(self.agenda), self.estado))
+        elif comando == "/novidades":
+            self.dizer(texto_novidades_ativas(self.novidades) if self.novidades else "Ainda não li o arquivo de novidades. Tente de novo em alguns minutos.")
         elif comando == "/proximos":
             self.dizer(texto_proximos(self.agenda, self.estado, agora, self.lista, self.erro_lista))
         elif comando == "/antes":
@@ -410,15 +480,38 @@ class Bot:
                 self.lista, self.erro_lista = self._ler_lista(self.agenda["servidor"]), False
             except Exception:
                 self.erro_lista = True
+        calado = self.estado["pausado"] or not dentro_da_janela(self.estado, agora, fuso(self.agenda))
+        self._repassar_novidades(calado)
         pendentes = avisos_fixos(self.agenda, self.estado, agora) + avisos_campo(self.agenda, self.estado, agora, self.lista)
         if not pendentes:
             return
-        calado = self.estado["pausado"] or not dentro_da_janela(self.estado, agora, fuso(self.agenda))
         for chave, texto in pendentes:
             if not calado:
                 self.dizer(texto)
             self.estado["enviados"][chave] = agora.timestamp()
         limpar_enviados(self.estado, agora)
+        self._salvar(self.estado)
+
+    def _repassar_novidades(self, calado):
+        """Novidade não se perde: fora da janela, espera a janela abrir."""
+        if time.time() - self._novidades_em >= NOVIDADES_A_CADA_S:
+            self._novidades_em = time.time()
+            try:
+                self.novidades = self._ler_novidades()
+            except Exception:
+                return
+        if not self.novidades:
+            return
+        primeira = self.estado.get("novidades_vistas") is None
+        pendentes = novidades_a_enviar(self.estado, self.novidades)
+        if primeira:
+            self._salvar(self.estado)
+        if calado or not pendentes:
+            return
+        for item_id, texto in pendentes:
+            self.dizer(texto, disable_web_page_preview=True)
+            self.estado["novidades_vistas"].append(item_id)
+        self.estado["novidades_vistas"] = self.estado["novidades_vistas"][-500:]
         self._salvar(self.estado)
 
 

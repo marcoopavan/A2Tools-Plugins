@@ -10,6 +10,8 @@ desligado. Roda na VPS. Não tem relação com a conta do jogo.
   Guardião Nahma, Executores, Argo e os reinícios.
 - Avisa dos chefes de campo (Gartua e os outros 23), lendo a cada 5 minutos a
   lista pública onde os medidores dos jogadores publicam os tempos.
+- Repassa as novidades do jogo: códigos de recompensa, Drops da Twitch,
+  atualizações e eventos, de `../novidades/novidades.json`.
 - Tudo aparece na lista; você liga e desliga cada um por botão. Já vêm ligados
   os chefes do Abismo e o Gartua.
 - Só avisa dentro dos seus horários: segunda a sexta das 20:30 à 01:00, sábado
@@ -46,12 +48,15 @@ desligado. Roda na VPS. Não tem relação com a conta do jogo.
 - `/lista`: eventos e chefes do Abismo, com botão de ligar e desligar.
 - `/campo`: chefes de campo.
 - `/proximos`: o que vem a seguir.
+- `/novidades`: códigos, Drops e eventos que estão valendo.
 - `/antes 15`: avisar 15 minutos antes (de fábrica, 10).
 - `/janela`: horários em que ele pode avisar. `/janela sempre` tira o limite.
 - `/pausa` e `/voltar`.
 
 ## Manutenção
 
+- Atualizar o bot: baixe de novo o `aion_avisos.py` (o primeiro `curl` acima) e
+  rode `docker restart aion-avisos`.
 - Atualizar o calendário depois de um patch: baixe de novo o `agenda.json`
   (o segundo `curl` acima) e rode `docker restart aion-avisos`.
 - Parar de vez: `docker rm -f aion-avisos`.
