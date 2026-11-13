@@ -183,6 +183,7 @@ test("a Compreensão do Tipo em palavras, pela página em uso", () => {
   assert.deepEqual(d[0].lines.map((l) => l.text), ["Ataque Máx. 12", "Amplificação de Dano 1,72%", "Tolerância a Dano Crítico 1,99%", "Atributo 999 7"]);
   assert.deepEqual(d[0].lines.map((l) => l.locked), [true, true, false, true]);
   assert.equal(d[1].name, "Tipo 5");
+  assert.equal(L.describeUnderstanding({ page: 3, essences: { 1: 605, 3: 600 }, kinds: [{ kind: 3, pages: [{ page: 3, lines: [] }] }] })[0].held, 605, "o tipo 3 gasta a essência 1");
   assert.equal(d[1].lines[0].text, "Amplificação de Dano em JvA 2,54%");
   assert.deepEqual(plain(L.describeUnderstanding(null)), []);
   const c = { name: "marcoopavan", serverId: 2405 };

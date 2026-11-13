@@ -146,6 +146,9 @@
     592: ["Resistência a Acerto Crítico Frontal"],
   };
   const KINDS = { 2: "Intelectual" };
+  // A essência que cada tipo gasta, como as cinco telas mostraram (a 6 é a
+  // comum a todos): o tipo 3 gasta a 1, os outros a de mesmo número ou a anterior.
+  const ESSENCE_OF = { 2: 2, 3: 1, 4: 3, 5: 4, 6: 5 };
   // "Ataque Máx. 12", "Amplificação de Dano 1,72%"; um atributo sem nome
   // conferido sai pelo id, com o valor como veio.
   function statLine(stat, value) {
@@ -162,7 +165,7 @@
       const lines = (Array.isArray(page.lines) ? page.lines : [])
         .filter((l) => Array.isArray(l) && l[0])
         .map(([stat, value, grade, locked]) => ({ text: statLine(stat, value), grade: grade ?? 0, locked: locked === true }));
-      return { name: KINDS[k.kind] || `Tipo ${k.kind}`, page: page.page ?? null, held: u.essences ? u.essences[k.kind] ?? null : null, lines };
+      return { name: KINDS[k.kind] || `Tipo ${k.kind}`, page: page.page ?? null, held: u.essences ? u.essences[ESSENCE_OF[k.kind]] ?? null : null, lines };
     });
   }
 
