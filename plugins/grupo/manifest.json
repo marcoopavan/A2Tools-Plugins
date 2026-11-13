@@ -1,0 +1,19 @@
+{
+  "id": "grupo",
+  "name": "Grupo",
+  "version": "0.1.0",
+  "apiVersion": 2,
+  "author": "marcoopavan",
+  "description": "O GS e o CP de cada um do seu grupo, numa janela que abre sozinha quando alguém entra ou sai e some depois de alguns segundos. Nada sai do computador.",
+  "permissions": [
+    "storage",
+    "window",
+    "events:character"
+  ],
+  "ui": {
+    "panel": {
+      "width": 300,
+      "height": 230
+    }
+  }
+}

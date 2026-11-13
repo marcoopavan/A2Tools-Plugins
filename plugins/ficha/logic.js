@@ -58,6 +58,12 @@
       out.itemsAt = now;
       if (Array.isArray(c.arcana) && c.arcana.length && (whole || !Array.isArray(out.arcana))) out.arcana = c.arcana;
     }
+    // A Compreensão do Tipo vem inteira no login.
+    const u = c.petUnderstanding;
+    if (u && Array.isArray(u.kinds) && u.kinds.length) {
+      out.petUnderstanding = u;
+      out.petUnderstandingAt = now;
+    }
     out.seenAt = now;
     return out;
   }
@@ -125,6 +131,39 @@
       position: card.position ?? 0,
       lines,
     };
+  }
+
+  // Os atributos conferidos nas páginas da Compreensão do Tipo de 13/11/2026:
+  // [nome, é porcentagem (valor em centésimos)].
+  const STATS = {
+    19: ["Ataque Adicional"], 28: ["Amplificação de Dano", true], 31: ["Ataque Máx."],
+    32: ["Amplificação de Dano de Arma", true], 38: ["Ataque Crítico"], 41: ["Defesa de Acerto Crítico"],
+    47: ["Tolerância a Dano Crítico", true], 50: ["Ataque contra Chefe"], 52: ["Defesa Adicional"],
+    56: ["Ataque em JvA"], 57: ["Defesa em JvA"], 104: ["Precisão Adicional"], 110: ["Precisão em JvA"],
+    128: ["Acerto Crítico"], 133: ["Resistência a Acerto Crítico"], 146: ["Acerto de Golpes Múltiplos", true],
+    147: ["Resistência a Golpes Múltiplos", true], 193: ["PV"], 196: ["Aumento de PV", true], 199: ["PM"],
+    379: ["Amplificação de Dano em JvA", true], 443: ["Golpe Potente", true], 591: ["Acerto Crítico Frontal"],
+    592: ["Resistência a Acerto Crítico Frontal"],
+  };
+  const KINDS = { 2: "Intelectual" };
+  // "Ataque Máx. 12", "Amplificação de Dano 1,72%"; um atributo sem nome
+  // conferido sai pelo id, com o valor como veio.
+  function statLine(stat, value) {
+    const known = STATS[stat];
+    if (!known) return `Atributo ${stat} ${fmt(value)}`;
+    return known[1] ? `${known[0]} ${(value / 100).toFixed(2).replace(".", ",")}%` : `${known[0]} ${fmt(value)}`;
+  }
+  // A página em uso de cada tipo, em palavras: [{ name, lines: [{ text, grade, locked }] }].
+  function describeUnderstanding(u) {
+    if (!u || !Array.isArray(u.kinds)) return [];
+    return u.kinds.map((k) => {
+      const pages = Array.isArray(k.pages) ? k.pages : [];
+      const page = pages.find((p) => p.page === u.page) || pages[pages.length - 1] || { lines: [] };
+      const lines = (Array.isArray(page.lines) ? page.lines : [])
+        .filter((l) => Array.isArray(l) && l[0])
+        .map(([stat, value, grade, locked]) => ({ text: statLine(stat, value), grade: grade ?? 0, locked: locked === true }));
+      return { name: KINDS[k.kind] || `Tipo ${k.kind}`, page: page.page ?? null, held: u.essences ? u.essences[k.kind] ?? null : null, lines };
+    });
   }
 
   // A evolução: um ponto [quando, CP, GS] só quando um dos dois mudou. O que
@@ -214,6 +253,6 @@
 
   globalThis.FichaLogic = {
     charKey, gameDay, gameWeek, clean, mergeCharacter, pushProgress, byDay, noteMax, noteStatsDay, diffStats, noteKda, fmt, signed,
-    CURRENCIES, wallet, noteWalletDay, describeCard,
+    CURRENCIES, wallet, noteWalletDay, describeCard, statLine, describeUnderstanding,
   };
 })();

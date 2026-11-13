@@ -1,0 +1,20 @@
+:root { color-scheme: dark; }
+html, body { margin: 0; background: transparent; }
+body {
+  font: 13px/1.35 "Segoe UI", system-ui, sans-serif; color: #e8eef7; padding: 8px 10px;
+  display: flex; flex-direction: column; gap: 6px; min-height: 100vh; box-sizing: border-box;
+}
+.vazio { opacity: 0.7; font-size: 12px; }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+th {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; text-align: right;
+  color: var(--a2-accent, #4fb6ff); padding-bottom: 2px;
+}
+th.nome, td.nome { text-align: left; }
+td { padding: 2px 0; }
+td.n { text-align: right; padding-left: 10px; }
+td.nome { max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+tr.eu td { color: var(--a2-accent, #4fb6ff); font-weight: 600; }
+tfoot td { border-top: 1px solid rgba(255, 255, 255, 0.18); opacity: 0.8; padding-top: 3px; }
+footer { margin-top: auto; display: flex; gap: 12px; font-size: 11px; opacity: 0.7; }
+footer label { display: flex; align-items: center; gap: 4px; cursor: pointer; }

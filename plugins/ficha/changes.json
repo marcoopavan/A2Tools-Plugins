@@ -1,5 +1,10 @@
 [
   {
+    "version": "0.3.0",
+    "pt": "Compreensão do Tipo: a página em uso de cada tipo, com as linhas, o que está travado e a essência em mãos.",
+    "en": "Type understanding: each type's page in use, with its lines, which are locked and the essence held."
+  },
+  {
     "version": "0.2.0",
     "pt": "Bolsa (Kinah, Pontos de Abismo e moedas de loja) e cartas de Arcano com nível, EXP e linhas, lidas do login. Precisa do medidor com leitura de itens.",
     "en": "The bag (Kinah, Abyss Points and shop coins) and the Arcana cards with level, EXP and lines, read at login. Needs a meter build that reads items."

@@ -183,6 +183,25 @@ function renderArcana() {
   }
 }
 
+// A Compreensão do Tipo: a página em uso de cada tipo. Fechada até pedir.
+function renderUnderstanding() {
+  const f = me && state.estado.chars[me];
+  const kinds = L.describeUnderstanding(f && f.petUnderstanding);
+  $(".sec-compr").hidden = !kinds.length;
+  const box = $(".compr");
+  box.replaceChildren();
+  for (const k of kinds) {
+    const head = el("div", "carta");
+    head.append(el("b", null, k.name), " ", el("small", null, [k.page ? `página ${k.page}` : "", k.held != null ? `${L.fmt(k.held)} de essência` : ""].filter(Boolean).join(" · ")));
+    const lines = el("div", "linhas");
+    k.lines.forEach((l, i) => {
+      if (i) lines.append(" · ");
+      lines.append(el("span", l.locked ? null : "aberta", l.text));
+    });
+    box.append(head, lines);
+  }
+}
+
 function renderProgress() {
   const body = $(".evo tbody");
   body.replaceChildren();
@@ -237,11 +256,17 @@ function render() {
   renderToday();
   renderWallet();
   renderArcana();
+  renderUnderstanding();
   renderProgress();
   renderStats();
   $(".pe").textContent = `Gravado em plugin-data/ficha · visto ${ago(f.seenAt)}`;
 }
 
+$(".ver-compr").addEventListener("click", () => {
+  const t = $(".compr");
+  t.hidden = !t.hidden;
+  $(".ver-compr").textContent = t.hidden ? "ver" : "ocultar";
+});
 $(".ver").addEventListener("click", () => {
   const t = $(".attrs");
   t.hidden = !t.hidden;

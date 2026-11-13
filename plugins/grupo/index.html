@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Grupo</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="vazio">Sem grupo. A janela abre sozinha quando alguém entrar.</div>
+    <table class="membros" hidden>
+      <thead>
+        <tr><th class="nome">Grupo</th><th>Nv.</th><th>GS</th><th>CP</th></tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot><tr class="media"></tr></tfoot>
+    </table>
+    <footer>
+      <label><input type="checkbox" class="auto" /> Abrir sozinha</label>
+      <label><input type="checkbox" class="keep" /> Ficar aberta em grupo</label>
+    </footer>
+    <script src="/_sdk/a2.js"></script>
+    <script src="logic.js"></script>
+    <script src="plugin.js"></script>
+  </body>
+</html>

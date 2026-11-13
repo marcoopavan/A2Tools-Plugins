@@ -1,10 +1,10 @@
 {
   "id": "ficha",
   "name": "Ficha do Personagem",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "apiVersion": 1,
   "author": "marcoopavan",
-  "description": "A ficha do seu personagem gravada em disco: CP, GS, atributos, bolsa (Kinah e moedas), cartas de Arcano, Kinah do dia, Pontos de Abismo, Energia de Od e Missões de Dever, com a evolução dia a dia. Nada sai do computador.",
+  "description": "A ficha do seu personagem gravada em disco: CP, GS, atributos, bolsa (Kinah e moedas), cartas de Arcano, Compreensão do Tipo, Kinah do dia, Pontos de Abismo, Energia de Od e Missões de Dever, com a evolução dia a dia. Nada sai do computador.",
   "permissions": [
     "storage",
     "events:character",

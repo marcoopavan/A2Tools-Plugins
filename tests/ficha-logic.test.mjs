@@ -167,3 +167,25 @@ test("uma carta em palavras", () => {
   assert.equal(L.describeCard({ item: 810230002, attribute: 16, value: 20, lines: [[99, 1]] }).name, "Manuscrito da Magia");
   assert.equal(L.describeCard({ item: 810230002, attribute: 3, value: 20, lines: [[99, 1]] }).lines[0], "Habilidade 99 +1");
 });
+
+test("a Compreensão do Tipo em palavras, pela página em uso", () => {
+  const u = {
+    page: 3,
+    essences: { 2: 1456, 6: 23645 },
+    kinds: [
+      { kind: 2, pages: [{ page: 1, lines: [[193, 32, 3, true]] }, { page: 3, lines: [[31, 12, 4, true], [28, 172, 4, true], [47, 199, 5, false], [0, 0, 0, false], [999, 7, 1, true]] }] },
+      { kind: 5, pages: [{ page: 3, lines: [[379, 254, 4, true]] }] },
+    ],
+  };
+  const d = plain(L.describeUnderstanding(u));
+  assert.equal(d[0].name, "Intelectual");
+  assert.equal(d[0].held, 1456);
+  assert.deepEqual(d[0].lines.map((l) => l.text), ["Ataque Máx. 12", "Amplificação de Dano 1,72%", "Tolerância a Dano Crítico 1,99%", "Atributo 999 7"]);
+  assert.deepEqual(d[0].lines.map((l) => l.locked), [true, true, false, true]);
+  assert.equal(d[1].name, "Tipo 5");
+  assert.equal(d[1].lines[0].text, "Amplificação de Dano em JvA 2,54%");
+  assert.deepEqual(plain(L.describeUnderstanding(null)), []);
+  const c = { name: "marcoopavan", serverId: 2405 };
+  const kept = L.mergeCharacter(L.mergeCharacter(null, { ...c, petUnderstanding: u }, now), { ...c, petUnderstanding: null }, now + HOUR);
+  assert.equal(kept.petUnderstanding.page, 3);
+});

@@ -49,5 +49,6 @@ td.d { text-align: right; font-size: 11px; width: 64px; }
 .carta { margin-top: 3px; }
 .carta small { opacity: 0.6; font-size: 11px; }
 .linhas { font-size: 12px; opacity: 0.8; }
+.linhas .aberta { opacity: 0.6; font-style: italic; }
 .pe { font-size: 10px; opacity: 0.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 body.compacto section, body.compacto .pe { display: none; }
