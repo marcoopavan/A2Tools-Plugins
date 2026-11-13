@@ -28,3 +28,14 @@ disso: o calendário deles já vem dentro do plugin.
 
 A pasta `telegram/` tem o bot que avisa pelo Telegram, rodando na VPS. O passo a
 passo está em `telegram/LEIA-ME.md`.
+
+## Ficha do Personagem (plugin nosso)
+
+`plugins/ficha` grava em disco o que o medidor sabe do personagem que está
+jogando: CP, GS, atributos, Kinah do dia, Pontos de Abismo, Energia de Od e
+Missões de Dever, com a evolução dia a dia. Fica em
+`%APPDATA%\com.a2tools.dps-meter\plugin-data\ficha\` (`estado.json` e
+`historico.json`). Não lê inventário e não manda nada para fora.
+
+Como ligar: em Configurações → Plugins, abra a Ficha uma vez. Depois ela roda
+mesmo com a janela oculta.

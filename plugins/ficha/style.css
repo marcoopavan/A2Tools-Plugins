@@ -1,0 +1,50 @@
+/* Transparente: a janela pinta o painel na opacidade que você escolhe. */
+[hidden] { display: none !important; }
+html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; }
+body {
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 8px 10px; box-sizing: border-box;
+  color: rgba(255, 255, 255, 0.9);
+  font: 13px/1.35 "Segoe UI", system-ui, sans-serif;
+  user-select: none;
+}
+.quem { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.nome { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sub { font-size: 11px; opacity: 0.65; white-space: nowrap; }
+.vazio { font-size: 12px; opacity: 0.7; padding: 12px 0; }
+main { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.pilulas { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.pilula {
+  display: flex; align-items: baseline; gap: 6px;
+  padding: 6px 8px; border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border-left: 3px solid var(--a2-accent, #4fb6ff);
+}
+.pilula .rot { font-size: 11px; opacity: 0.6; }
+.pilula b { font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.pilula i { font-style: normal; font-size: 11px; margin-left: auto; font-variant-numeric: tabular-nums; }
+.sobe { color: #7ed48a; }
+.desce { color: #f08a8a; }
+h2 {
+  margin: 0 0 3px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--a2-accent, #4fb6ff); display: flex; align-items: center; gap: 6px;
+}
+h2 button {
+  margin-left: auto; font: inherit; font-size: 10px; text-transform: none; letter-spacing: 0;
+  color: inherit; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 4px; padding: 0 6px; cursor: pointer;
+}
+dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; }
+dt { opacity: 0.7; }
+dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+dd small { opacity: 0.55; font-size: 11px; }
+.barra { grid-column: 1 / -1; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.1); overflow: hidden; margin-bottom: 2px; }
+.barra > span { display: block; height: 100%; background: var(--a2-accent, #4fb6ff); }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+td { padding: 1px 0; }
+td.n { text-align: right; }
+td.d { text-align: right; font-size: 11px; width: 64px; }
+.evo td:first-child, .attrs td:first-child { opacity: 0.7; }
+.resumo { margin: 0; font-size: 12px; opacity: 0.75; }
+.pe { font-size: 10px; opacity: 0.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+body.compacto section, body.compacto .pe { display: none; }

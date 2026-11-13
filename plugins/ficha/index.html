@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Ficha do Personagem</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="quem">
+      <div class="nome">—</div>
+      <div class="sub"></div>
+    </header>
+    <div class="vazio" hidden>Entre no jogo com o medidor aberto: a ficha se preenche sozinha no login.</div>
+    <main>
+      <div class="pilulas">
+        <div class="pilula"><span class="rot">CP</span><b class="cp">—</b><i class="cpd"></i></div>
+        <div class="pilula"><span class="rot">GS</span><b class="gs">—</b><i class="gsd"></i></div>
+      </div>
+      <section>
+        <h2>Hoje</h2>
+        <dl class="hoje"></dl>
+      </section>
+      <section>
+        <h2>Evolução</h2>
+        <table class="evo"><tbody></tbody></table>
+      </section>
+      <section>
+        <h2>Atributos <button type="button" class="ver">ver</button></h2>
+        <p class="resumo"></p>
+        <table class="attrs" hidden><tbody></tbody></table>
+      </section>
+    </main>
+    <footer class="pe"></footer>
+    <script src="/_sdk/a2.js"></script>
+    <script src="logic.js"></script>
+    <script src="plugin.js"></script>
+  </body>
+</html>
