@@ -46,8 +46,85 @@
       out.abyssPoints = [c.abyssPoints[0], num(c.abyssPoints[1]) ? c.abyssPoints[1] : null];
     }
     if (num(c.cooldownReduction)) out.cooldownReduction = c.cooldownReduction;
+    // Os itens: a lista inteira (login) troca a guardada; só as mudanças
+    // (medidor aberto no meio da sessão) atualizam as moedas e mais nada.
+    if (Array.isArray(c.items) && c.items.length) {
+      const whole = c.itemsWhole === true;
+      if (whole || !Array.isArray(out.items)) {
+        out.items = c.items;
+        out.itemsWhole = whole;
+      }
+      out.wallet = { ...(whole ? {} : out.wallet || {}), ...wallet(c.items) };
+      out.itemsAt = now;
+      if (Array.isArray(c.arcana) && c.arcana.length && (whole || !Array.isArray(out.arcana))) out.arcana = c.arcana;
+    }
     out.seenAt = now;
     return out;
+  }
+
+  // As moedas são itens da bolsa (ids 9301000xx), como o jogo mostrou em
+  // 13/11/2026 ao lado da lista. As sem nome conferido ficam pelo id.
+  // Em lista, na ordem de mostrar.
+  const CURRENCIES = [
+    [930100031, "Kinah"],
+    [930100001, "Kinah vinculado"],
+    [930100003, "Pontos de Abismo"],
+    [930100011, "Moedas da Festa Shugo"],
+    [930100019, "Moedas do Juramento"],
+    [930100017, "Fragmentos Oníricos"],
+  ];
+  // { id da moeda: quantidade } a partir de [[item, quantidade, recipiente]].
+  function wallet(items) {
+    const out = {};
+    for (const it of Array.isArray(items) ? items : []) {
+      if (!Array.isArray(it) || !num(it[0]) || !num(it[1])) continue;
+      if (it[0] >= 930100000 && it[0] < 930200000) out[it[0]] = (out[it[0]] ?? 0) + it[1];
+    }
+    return out;
+  }
+  // A carteira de cada dia do jogo: a última vista no dia. Guarda `cap` dias.
+  function noteWalletDay(map, w, now, cap = 60) {
+    const out = { ...(map || {}) };
+    if (!w || !Object.keys(w).length) return out;
+    out[gameDay(now)] = { ...w };
+    const keys = Object.keys(out).sort();
+    for (const k of keys.slice(0, Math.max(0, keys.length - cap))) delete out[k];
+    return out;
+  }
+
+  // As cartas de Arcano: 8101xxxxx Cálice ... 8105xxxxx Espelho; o conjunto
+  // pelo último dígito (1 Vigor, 2 Magia), como as seis cartas lidas.
+  const CARDS = { 1: "Cálice", 2: "Manuscrito", 3: "Bússola", 4: "Sino", 5: "Espelho" };
+  const SETS = { 1: " do Vigor", 2: " da Magia" };
+  const ATTRIBUTES = { 7: "Justiça", 8: "Liberdade", 9: "Ilusão", 11: "Tempo", 16: "Destino" };
+  // As habilidades do Arqueiro conferidas nas linhas das cartas.
+  const SKILLS = {
+    14010000: "Flecha Certeira", 14020000: "Tiro de Precisão", 14050000: "Flecha Pontiaguda",
+    14070000: "Flecha de Supressão", 14080000: "Flecha de Ruptura", 14090000: "Flecha de Marcação",
+    14110000: "Flecha de Vento Tempestuoso", 14130000: "Flecha Laçadora", 14170000: "Armadilha de Explosão",
+    14330000: "Rajada de Flechas", 14340000: "Disparo Rápido", 14710000: "Olho de Sentinela",
+    14720000: "Tiro Concentrado", 14740000: "Olho da Concentração", 14750000: "Determinação do Caçador",
+    14770000: "Olho da Contenção", 14780000: "Tiro à Queima-roupa", 14790000: "Pacto de Revitalização",
+    14800000: "Alma do Caçador",
+  };
+  const cardName = (item) => {
+    const kind = CARDS[Math.floor(item / 100000) % 10];
+    return kind ? kind + (SETS[item % 10] || "") : `Carta ${item}`;
+  };
+  // Uma carta em palavras: { name, level, exp, attribute, worn, lines: ["Disparo Rápido +1"] }.
+  function describeCard(card) {
+    const lines = (Array.isArray(card.lines) ? card.lines : [])
+      .filter((l) => Array.isArray(l) && num(l[0]) && num(l[1]))
+      .map(([skill, levels]) => `${SKILLS[skill] || `Habilidade ${skill}`} +${levels}`);
+    return {
+      name: cardName(card.item),
+      level: card.level ?? 0,
+      exp: card.exp ?? 0,
+      attribute: `${ATTRIBUTES[card.attribute] || `Atributo ${card.attribute}`} ${card.value}`,
+      worn: card.worn === true,
+      position: card.position ?? 0,
+      lines,
+    };
   }
 
   // A evolução: um ponto [quando, CP, GS] só quando um dos dois mudou. O que
@@ -137,5 +214,6 @@
 
   globalThis.FichaLogic = {
     charKey, gameDay, gameWeek, clean, mergeCharacter, pushProgress, byDay, noteMax, noteStatsDay, diffStats, noteKda, fmt, signed,
+    CURRENCIES, wallet, noteWalletDay, describeCard,
   };
 })();

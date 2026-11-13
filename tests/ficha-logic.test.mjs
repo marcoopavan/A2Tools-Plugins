@@ -122,3 +122,48 @@ test("números no formato daqui", () => {
   assert.equal(L.signed(-1521), "−1.521");
   assert.equal(L.signed(0), "");
 });
+
+// A bolsa e as cartas, como o medidor as manda desde a leitura de itens.
+const ITEMS = [[930100031, 542223, 1], [930100001, 13643, 1], [930100003, 6719, 1], [930100019, 17880, 1], [511490001, 137, 1], [610730011, 2, 15]];
+const SINO = { item: 810430001, worn: true, position: 44, level: 2, exp: 8600, attribute: 7, value: 22, lines: [[14710000, 1], [14770000, 1], [14790000, 1], [14750000, 3]] };
+
+test("a carteira soma só as moedas", () => {
+  assert.deepEqual(plain(L.wallet(ITEMS)), { 930100031: 542223, 930100001: 13643, 930100003: 6719, 930100019: 17880 });
+  assert.deepEqual(plain(L.wallet(null)), {});
+  assert.deepEqual(plain(L.wallet([[930100031, 5, 1], [930100031, 7, 18], ["x"], null])), { 930100031: 12 });
+});
+
+test("a lista inteira troca a guardada; as mudanças só mexem nas moedas", () => {
+  const c = { name: "marcoopavan", serverId: 2405 };
+  const first = L.mergeCharacter(null, { ...c, items: ITEMS, itemsWhole: true, arcana: [SINO] }, now);
+  assert.equal(first.items.length, 6);
+  assert.equal(first.itemsWhole, true);
+  assert.equal(first.wallet[930100031], 542223);
+  assert.equal(first.arcana.length, 1);
+  // Medidor aberto no meio da sessão seguinte: só o Kinah vinculado mudou.
+  const later = L.mergeCharacter(first, { ...c, items: [[930100001, 1643, 1]], itemsWhole: false, arcana: [] }, now + HOUR);
+  assert.equal(later.items.length, 6, "a lista inteira guardada fica");
+  assert.equal(later.wallet[930100001], 1643);
+  assert.equal(later.wallet[930100031], 542223);
+  assert.equal(later.arcana.length, 1);
+  // Sem itens no evento, nada muda.
+  const none = L.mergeCharacter(later, { ...c, items: null, itemsWhole: null, arcana: null }, now + 2 * HOUR);
+  assert.equal(none.wallet[930100001], 1643);
+});
+
+test("a carteira de cada dia do jogo guarda a última vista", () => {
+  let map = L.noteWalletDay({}, { 930100031: 10 }, now);
+  map = L.noteWalletDay(map, { 930100031: 25 }, now + HOUR);
+  map = L.noteWalletDay(map, { 930100031: 40 }, now + 24 * HOUR);
+  assert.deepEqual(plain(map), { "2026-11-13": { 930100031: 25 }, "2026-11-14": { 930100031: 40 } });
+  assert.deepEqual(plain(L.noteWalletDay(map, {}, now)), plain(map));
+});
+
+test("uma carta em palavras", () => {
+  const d = plain(L.describeCard(SINO));
+  assert.equal(d.name, "Sino do Vigor");
+  assert.equal(d.attribute, "Justiça 22");
+  assert.deepEqual(d.lines, ["Olho de Sentinela +1", "Olho da Contenção +1", "Pacto de Revitalização +1", "Determinação do Caçador +3"]);
+  assert.equal(L.describeCard({ item: 810230002, attribute: 16, value: 20, lines: [[99, 1]] }).name, "Manuscrito da Magia");
+  assert.equal(L.describeCard({ item: 810230002, attribute: 3, value: 20, lines: [[99, 1]] }).lines[0], "Habilidade 99 +1");
+});

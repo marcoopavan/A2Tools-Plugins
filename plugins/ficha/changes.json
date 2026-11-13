@@ -1,5 +1,10 @@
 [
   {
+    "version": "0.2.0",
+    "pt": "Bolsa (Kinah, Pontos de Abismo e moedas de loja) e cartas de Arcano com nível, EXP e linhas, lidas do login. Precisa do medidor com leitura de itens.",
+    "en": "The bag (Kinah, Abyss Points and shop coins) and the Arcana cards with level, EXP and lines, read at login. Needs a meter build that reads items."
+  },
+  {
     "version": "0.1.0",
     "pt": "Primeira versão: ficha gravada em disco, evolução de CP e GS, Kinah do dia, Pontos de Abismo e atributos.",
     "en": "First version: the character sheet saved to disk, CP and GS over time, Kinah today, Abyss Points and stats."

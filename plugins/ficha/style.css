@@ -45,6 +45,9 @@ td { padding: 1px 0; }
 td.n { text-align: right; }
 td.d { text-align: right; font-size: 11px; width: 64px; }
 .evo td:first-child, .attrs td:first-child { opacity: 0.7; }
-.resumo { margin: 0; font-size: 12px; opacity: 0.75; }
+.resumo, .bolsa-pe { margin: 0; font-size: 12px; opacity: 0.75; }
+.carta { margin-top: 3px; }
+.carta small { opacity: 0.6; font-size: 11px; }
+.linhas { font-size: 12px; opacity: 0.8; }
 .pe { font-size: 10px; opacity: 0.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 body.compacto section, body.compacto .pe { display: none; }

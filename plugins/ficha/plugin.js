@@ -19,7 +19,7 @@ const CLASSES = {
 const STAT_NAMES = { 215: "Redução de recarga", 385: "Aumento de recarga" };
 
 // estado:    { v, last, chars: { "<nome>@<servidor>": ficha atual } }
-// historico: { v, chars: { "<nome>@<servidor>": { progress, kinah, abyss, statsByDay, kda } } }
+// historico: { v, chars: { "<nome>@<servidor>": { progress, kinah, abyss, statsByDay, kda, wallet } } }
 const state = { estado: { v: 1, last: null, chars: {} }, historico: { v: 1, chars: {} } };
 let me = null; // a chave de quem está jogando
 let lastSheet = null; // a folha de atributos que chegou antes de se saber quem joga
@@ -62,6 +62,7 @@ a2.on("character", (c) => {
   h.progress = L.pushProgress(h.progress, ficha.combatPower, ficha.gearScore, now);
   if (ficha.kinahToday != null) h.kinah = L.noteMax(h.kinah, L.gameDay(now), ficha.kinahToday);
   if (ficha.abyssPoints) h.abyss = L.noteMax(h.abyss, L.gameWeek(now), ficha.abyssPoints[0]);
+  if (ficha.wallet) h.wallet = L.noteWalletDay(h.wallet, ficha.wallet, now);
   if (lastSheet) takeStats(lastSheet, now);
   save("estado");
   save("historico");
@@ -147,6 +148,41 @@ function renderToday() {
   if (!dl.children.length) dl.append(el("dt", null, "O jogo ainda não disse nada hoje."), el("dd"));
 }
 
+// A bolsa: as moedas com nome conferido, na ordem de CURRENCIES.
+function renderWallet() {
+  const f = me && state.estado.chars[me];
+  const dl = $(".bolsa");
+  dl.replaceChildren();
+  const w = (f && f.wallet) || {};
+  $(".sec-bolsa").hidden = !Object.keys(w).length;
+  if (!Object.keys(w).length) return;
+  for (const [id, name] of L.CURRENCIES) {
+    if (w[id] == null || id === 930100001) continue;
+    const bound = id === 930100031 && w[930100001] ? `+ ${L.fmt(w[930100001])} vinculado` : "";
+    row(dl, name, L.fmt(w[id]), bound);
+  }
+  const stacks = Array.isArray(f.items) ? f.items.length : 0;
+  $(".bolsa-pe").textContent = [
+    stacks ? `${stacks} itens gravados` : "",
+    f.itemsWhole ? "" : "só o que mudou: a lista inteira vem no login",
+    ago(f.itemsAt),
+  ].filter(Boolean).join(" · ");
+}
+
+// As cartas de Arcano: as equipadas na ordem do jogo, depois as guardadas.
+function renderArcana() {
+  const f = me && state.estado.chars[me];
+  const box = $(".arcana");
+  box.replaceChildren();
+  const cards = ((f && f.arcana) || []).map(L.describeCard).sort((a, b) => b.worn - a.worn || a.position - b.position);
+  $(".sec-arcana").hidden = !cards.length;
+  for (const c of cards) {
+    const head = el("div", "carta");
+    head.append(el("b", null, `${c.name} +${c.level}`), " ", el("small", null, [c.attribute, c.exp ? `${L.fmt(c.exp)} EXP` : "", c.worn ? "" : "guardada"].filter(Boolean).join(" · ")));
+    box.append(head, el("div", "linhas", c.lines.join(" · ")));
+  }
+}
+
 function renderProgress() {
   const body = $(".evo tbody");
   body.replaceChildren();
@@ -199,6 +235,8 @@ function render() {
   $(".cp").textContent = L.fmt(f.combatPower);
   $(".gs").textContent = L.fmt(f.gearScore);
   renderToday();
+  renderWallet();
+  renderArcana();
   renderProgress();
   renderStats();
   $(".pe").textContent = `Gravado em plugin-data/ficha · visto ${ago(f.seenAt)}`;
