@@ -121,6 +121,86 @@
     });
   }
 
+  // As ofertas das lojas de troca com nome, casadas pelos prints de
+  // 13/11/2026 (contagem e ordem na tela): { loja: { oferta: [nome, limite, período] } }.
+  const SHOPS = { 990007: "Festa Shugo", 990001: "Troca do Abismo", 990003: "Troca do Pesadelo", 990008: "Temporada" };
+  const OFFERS = {
+    990007: {
+      505015135: ["Cristal de Daevanion", 15, ""],
+      505015136: ["Cristal da Alma", 30, "no mês"],
+      505015137: ["Fragmento de Estigma", 35, ""],
+      505015210: ["Od Radiante", 3, "no mês"],
+    },
+    990001: { 501015114: ["Fragmento de Estigma", 50, ""] },
+    990003: {
+      502024517: ["Fragmento de Estigma", 35, ""],
+      502024518: ["Cristal de Daevanion", 50, ""],
+    },
+    990008: {
+      506023024: ["Pedra de Refino", 50, "por servidor"],
+      506023025: ["Pedra de Refino do Magistral", 30, "por servidor"],
+      506023026: ["Pedra de Refino do Perito", 20, "por servidor"],
+      506023027: ["Pedra de Refino Suprema", 10, "por servidor"],
+      506023028: ["Mente da Fúria", 10, "por servidor"],
+      506023029: ["Vontade da Fúria", 10, "por servidor"],
+      506023030: ["Ego da Fúria", 10, "por servidor"],
+      506023032: ["Od Radiante", 5, "por servidor"],
+    },
+  };
+  // Cada loja já aberta, com as ofertas de nome conhecido (as não compradas
+  // contam 0) e quantas outras compras não têm nome.
+  function describeShops(shopBought) {
+    const out = [];
+    for (const [shop, name] of Object.entries(SHOPS)) {
+      const list = shopBought && shopBought[shop];
+      if (!list || typeof list !== "object") continue;
+      const known = OFFERS[shop] || {};
+      const offers = Object.entries(known).map(([offer, [label, limit, period]]) => {
+        const bought = num(list[offer]) ? list[offer] : 0;
+        return { name: label, bought, limit, period, left: Math.max(0, limit - bought) };
+      });
+      const unnamed = Object.keys(list).filter((offer) => !known[offer]).length;
+      out.push({ shop: name, offers, unnamed });
+    }
+    return out;
+  }
+
+  // Os contadores de entrada com nome, casados pelos limites do jogo
+  // (metabot.gg, lidos do cliente global) com os números de 13/11/2026:
+  // { id: [nome, limite] }. Os de tempo vêm em contentTimes, em ms.
+  const COUNTERS = {
+    1: ["Chaves da Festa Shugo", 21], 4: ["Pesadelo", 14], 7: ["Bilhetes da Fresta", null], 8: ["Chaves da Invasão Dimensional", 7],
+    101: ["Masmorra Diária", 14], 60000006: ["Conquista: recompensas", 21], 60000007: ["Conquista: chefes finais na semana", 35],
+    60000008: ["Transcendência: chefes finais na semana", 28], 60000009: ["Cubos não obtidos", 10],
+    70000001: ["Bilhetes de Subjugação", 3], 80000001: ["Provação da Ascensão", 3],
+    90000001: ["Ludra: tentativas", 4], 90000002: ["Ludra: chefe final", 1],
+    90000003: ["2ª raide: tentativas", 4], 90000004: ["2ª raide: chefe final", 2],
+    90000005: ["3ª raide: tentativas", 4], 90000006: ["3ª raide: chefe final", 2],
+  };
+  const TIMES = {
+    3: "Abismo (camada 1)", 9: "Abismo (camada 2)", 13: "Reshanta Exterior",
+    201: "Masmorra de crescimento 1", 202: "Masmorra de crescimento 2", 203: "Masmorra de crescimento 3",
+    204: "Masmorra de crescimento 4", 205: "Masmorra de crescimento 5", 206: "Masmorra de crescimento 6",
+  };
+  // [{ name, text }] na ordem de COUNTERS e depois TIMES: só o que o jogo já disse.
+  function describeEntries(counts, times) {
+    const out = [];
+    for (const [id, [name, cap]] of Object.entries(COUNTERS)) {
+      const v = counts && counts[id];
+      if (!Array.isArray(v) || !num(v[0])) continue;
+      out.push({ name, text: `${fmt(v[0])}${cap ? ` de ${cap}` : ""}${num(v[1]) && v[1] > 0 ? ` (+${v[1]})` : ""}` });
+    }
+    for (const [id, name] of Object.entries(TIMES)) {
+      const t = times && times[id];
+      const ms = Array.isArray(t) ? t[0] : null;
+      if (!num(ms)) continue;
+      const h = Math.floor(ms / 3_600_000);
+      const m = Math.round((ms % 3_600_000) / 60_000);
+      out.push({ name, text: m ? `${h} h ${m} min` : `${h} h` });
+    }
+    return out;
+  }
+
   // As cartas de Arcano: 8101xxxxx Cálice ... 8105xxxxx Espelho; o conjunto
   // pelo último dígito (1 Vigor, 2 Magia), como as seis cartas lidas.
   const CARDS = { 1: "Cálice", 2: "Manuscrito", 3: "Bússola", 4: "Sino", 5: "Espelho" };
@@ -168,7 +248,9 @@
     379: ["Amplificação de Dano em JvA", true], 443: ["Golpe Potente", true], 591: ["Acerto Crítico Frontal"],
     592: ["Resistência a Acerto Crítico Frontal"],
   };
-  const KINDS = { 2: "Intelectual" };
+  // Os nomes do cliente em português (metabot.gg lê as traduções do jogo),
+  // na ordem da tela, que é a dos ids.
+  const KINDS = { 2: "Intelectual", 3: "Feral", 4: "Natural", 5: "Variante", 6: "Especial" };
   // A essência que cada tipo gasta, como as cinco telas mostraram (a 6 é a
   // comum a todos): o tipo 3 gasta a 1, os outros a de mesmo número ou a anterior.
   const ESSENCE_OF = { 2: 2, 3: 1, 4: 3, 5: 4, 6: 5 };
@@ -279,6 +361,6 @@
 
   globalThis.FichaLogic = {
     charKey, gameDay, gameWeek, clean, mergeCharacter, pushProgress, byDay, noteMax, noteStatsDay, diffStats, noteKda, fmt, signed,
-    CURRENCIES, wallet, noteWalletDay, describeCard, statLine, describeUnderstanding, shardsLeft,
+    CURRENCIES, wallet, noteWalletDay, describeCard, statLine, describeUnderstanding, shardsLeft, describeShops, describeEntries,
   };
 })();

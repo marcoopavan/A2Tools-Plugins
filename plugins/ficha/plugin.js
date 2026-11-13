@@ -189,6 +189,30 @@ function renderArcana() {
   }
 }
 
+// Entradas e lojas, fechadas até pedir.
+function renderEntries() {
+  const f = me && state.estado.chars[me];
+  const rows = f ? L.describeEntries(f.contentCounts, f.contentTimes) : [];
+  const dl = $(".entradas");
+  dl.replaceChildren();
+  $(".sec-entradas").hidden = !rows.length;
+  for (const r of rows) row(dl, r.name, r.text);
+}
+function renderShops() {
+  const f = me && state.estado.chars[me];
+  const shops = f ? L.describeShops(f.shopBought) : [];
+  const box = $(".lojas");
+  box.replaceChildren();
+  $(".sec-lojas").hidden = !shops.length;
+  for (const s of shops) {
+    box.append(el("div", "carta", s.shop));
+    const dl = el("dl");
+    for (const o of s.offers) row(dl, o.name, `${o.bought} de ${o.limit}`, [o.period, o.left ? `restam ${o.left}` : "esgotado"].filter(Boolean).join(" · "));
+    if (s.unnamed) dl.append(el("dt", null, `${s.unnamed} outra(s) compra(s) sem nome`), el("dd"));
+    box.append(dl);
+  }
+}
+
 // A Compreensão do Tipo: a página em uso de cada tipo. Fechada até pedir.
 function renderUnderstanding() {
   const f = me && state.estado.chars[me];
@@ -263,11 +287,20 @@ function render() {
   renderWallet();
   renderArcana();
   renderUnderstanding();
+  renderEntries();
+  renderShops();
   renderProgress();
   renderStats();
   $(".pe").textContent = `Gravado em plugin-data/ficha · visto ${ago(f.seenAt)}`;
 }
 
+for (const [btn, box] of [[".ver-entradas", ".entradas"], [".ver-lojas", ".lojas"]]) {
+  $(btn).addEventListener("click", () => {
+    const t = $(box);
+    t.hidden = !t.hidden;
+    $(btn).textContent = t.hidden ? "ver" : "ocultar";
+  });
+}
 $(".ver-compr").addEventListener("click", () => {
   const t = $(".compr");
   t.hidden = !t.hidden;

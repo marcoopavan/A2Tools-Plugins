@@ -1,5 +1,10 @@
 [
   {
+    "version": "0.5.0",
+    "pt": "Nomes: os cinco tipos de mascote, os contadores de entrada (Conquista, Transcendência, raides, Subjugação, tempo de Abismo e de masmorras de crescimento) e as ofertas das lojas de troca, com o comprado e o limite.",
+    "en": "Names: the five pet types, the entry counters (Conquest, Transcendence, raids, Subjugation, Abyss and growth dungeon time) and the exchange shop offers, with bought and limit."
+  },
+  {
     "version": "0.4.0",
     "pt": "Fragmentos de Estigma ainda à venda nas lojas de troca (Abismo, Pesadelo e Festa Shugo), pelo que o jogo diz ao abrir cada loja.",
     "en": "Stigma Shards still for sale in the exchange shops (Abyss, Nightmare and Shugo Festival), from what the game says as each shop opens."
@@ -18,10 +23,5 @@
     "version": "0.2.0",
     "pt": "Bolsa (Kinah, Pontos de Abismo e moedas de loja) e cartas de Arcano com nível, EXP e linhas, lidas do login. Precisa do medidor com leitura de itens.",
     "en": "The bag (Kinah, Abyss Points and shop coins) and the Arcana cards with level, EXP and lines, read at login. Needs a meter build that reads items."
-  },
-  {
-    "version": "0.1.0",
-    "pt": "Primeira versão: ficha gravada em disco, evolução de CP e GS, Kinah do dia, Pontos de Abismo e atributos.",
-    "en": "First version: the character sheet saved to disk, CP and GS over time, Kinah today, Abyss Points and stats."
   }
 ]

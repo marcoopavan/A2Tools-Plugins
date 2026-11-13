@@ -182,7 +182,7 @@ test("a Compreensão do Tipo em palavras, pela página em uso", () => {
   assert.equal(d[0].held, 1456);
   assert.deepEqual(d[0].lines.map((l) => l.text), ["Ataque Máx. 12", "Amplificação de Dano 1,72%", "Tolerância a Dano Crítico 1,99%", "Atributo 999 7"]);
   assert.deepEqual(d[0].lines.map((l) => l.locked), [true, true, false, true]);
-  assert.equal(d[1].name, "Tipo 5");
+  assert.equal(d[1].name, "Variante");
   assert.equal(L.describeUnderstanding({ page: 3, essences: { 1: 605, 3: 600 }, kinds: [{ kind: 3, pages: [{ page: 3, lines: [] }] }] })[0].held, 605, "o tipo 3 gasta a essência 1");
   assert.equal(d[1].lines[0].text, "Amplificação de Dano em JvA 2,54%");
   assert.deepEqual(plain(L.describeUnderstanding(null)), []);
@@ -201,4 +201,23 @@ test("os Fragmentos de Estigma ainda à venda, pelas lojas já abertas", () => {
   const c = { name: "marcoopavan", serverId: 2405 };
   const two = L.mergeCharacter(L.mergeCharacter(null, { ...c, shopBought: { 990001: { 501015114: 47 } } }, now), { ...c, shopBought: { 990003: { 502024517: 34 } } }, now + HOUR);
   assert.deepEqual(Object.keys(two.shopBought), ["990001", "990003"], "cada loja fica como abriu pela última vez");
+});
+
+test("os nomes dos tipos, das lojas e dos contadores", () => {
+  const u = { page: 3, essences: {}, kinds: [3, 4, 5, 6].map((kind) => ({ kind, pages: [{ page: 3, lines: [] }] })) };
+  assert.deepEqual(plain(L.describeUnderstanding(u)).map((k) => k.name), ["Feral", "Natural", "Variante", "Especial"]);
+  // As listas de 13/11/2026, como o jogo mandou ao abrir cada loja.
+  const shops = plain(L.describeShops({
+    990007: { 505015104: 10, 505015133: 10, 505015134: 15, 505015135: 15, 505015137: 35, 505015210: 3 },
+    990008: { 506023024: 1, 506023025: 30, 506023026: 3, 506023027: 1, 506023028: 10, 506023030: 7, 506023032: 1 },
+  }));
+  assert.deepEqual(shops.map((s) => [s.shop, s.unnamed]), [["Festa Shugo", 3], ["Temporada", 0]]);
+  assert.deepEqual(shops[0].offers.map((o) => `${o.name} ${o.bought}/${o.limit}`), ["Cristal de Daevanion 15/15", "Cristal da Alma 0/30", "Fragmento de Estigma 35/35", "Od Radiante 3/3"]);
+  assert.equal(shops[1].offers.find((o) => o.name === "Vontade da Fúria").bought, 0);
+  assert.equal(shops[1].offers.find((o) => o.name === "Ego da Fúria").left, 3);
+  const entries = plain(L.describeEntries({ 4: [6, 0], 1: [4, 2], 60000007: [35, 0], 777: [9, 0] }, { 13: [10800000, 0], 3: [19474000, 0] }));
+  assert.deepEqual(entries.map((e) => `${e.name}: ${e.text}`), [
+    "Chaves da Festa Shugo: 4 de 21 (+2)", "Pesadelo: 6 de 14", "Conquista: chefes finais na semana: 35 de 35",
+    "Abismo (camada 1): 5 h 25 min", "Reshanta Exterior: 3 h",
+  ]);
 });
