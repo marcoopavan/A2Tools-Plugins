@@ -58,6 +58,11 @@
       out.itemsAt = now;
       if (Array.isArray(c.arcana) && c.arcana.length && (whole || !Array.isArray(out.arcana))) out.arcana = c.arcana;
     }
+    // O comprado em cada loja de troca, como cada loja abriu pela última vez.
+    if (c.shopBought && typeof c.shopBought === "object" && Object.keys(c.shopBought).length) {
+      out.shopBought = { ...(out.shopBought || {}), ...clean(c.shopBought) };
+      out.shopBoughtAt = now;
+    }
     // A Compreensão do Tipo vem inteira no login.
     const u = c.petUnderstanding;
     if (u && Array.isArray(u.kinds) && u.kinds.length) {
@@ -96,6 +101,24 @@
     const keys = Object.keys(out).sort();
     for (const k of keys.slice(0, Math.max(0, keys.length - cap))) delete out[k];
     return out;
+  }
+
+  // Onde se compra Fragmento de Estigma, como as lojas mostraram em
+  // 13/11/2026: [loja, oferta, limite por personagem, nome].
+  const SHARD_OFFERS = [
+    [990001, 501015114, 50, "Abismo"],
+    [990003, 502024517, 35, "Pesadelo"],
+    [990007, 505015137, 35, "Festa Shugo"],
+  ];
+  // Quantos ainda dá para comprar em cada loja: left é null na loja que
+  // ainda não foi aberta com o medidor ligado (o jogo só diz ao abrir).
+  function shardsLeft(shopBought) {
+    return SHARD_OFFERS.map(([shop, offer, limit, name]) => {
+      const list = shopBought && shopBought[shop];
+      if (!list || typeof list !== "object") return { name, limit, bought: null, left: null };
+      const bought = num(list[offer]) ? list[offer] : 0;
+      return { name, limit, bought, left: Math.max(0, limit - bought) };
+    });
   }
 
   // As cartas de Arcano: 8101xxxxx Cálice ... 8105xxxxx Espelho; o conjunto
@@ -256,6 +279,6 @@
 
   globalThis.FichaLogic = {
     charKey, gameDay, gameWeek, clean, mergeCharacter, pushProgress, byDay, noteMax, noteStatsDay, diffStats, noteKda, fmt, signed,
-    CURRENCIES, wallet, noteWalletDay, describeCard, statLine, describeUnderstanding,
+    CURRENCIES, wallet, noteWalletDay, describeCard, statLine, describeUnderstanding, shardsLeft,
   };
 })();

@@ -1,5 +1,10 @@
 [
   {
+    "version": "0.4.0",
+    "pt": "Fragmentos de Estigma ainda à venda nas lojas de troca (Abismo, Pesadelo e Festa Shugo), pelo que o jogo diz ao abrir cada loja.",
+    "en": "Stigma Shards still for sale in the exchange shops (Abyss, Nightmare and Shugo Festival), from what the game says as each shop opens."
+  },
+  {
     "version": "0.3.1",
     "pt": "A essência de cada tipo na Compreensão do Tipo sai pela moeda certa.",
     "en": "Each type's essence in Type understanding now reads the right currency."

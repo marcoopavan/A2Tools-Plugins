@@ -190,3 +190,15 @@ test("a Compreensão do Tipo em palavras, pela página em uso", () => {
   const kept = L.mergeCharacter(L.mergeCharacter(null, { ...c, petUnderstanding: u }, now), { ...c, petUnderstanding: null }, now + HOUR);
   assert.equal(kept.petUnderstanding.page, 3);
 });
+
+test("os Fragmentos de Estigma ainda à venda, pelas lojas já abertas", () => {
+  // Como as lojas mostraram em 13/11/2026: Abismo 47 de 50, Pesadelo 34 de 35; a Festa ainda não aberta.
+  const bought = { 990001: { 501015114: 47, 501015113: 50 }, 990003: { 502024517: 34 } };
+  assert.deepEqual(plain(L.shardsLeft(bought)).map((s) => [s.name, s.left]), [["Abismo", 3], ["Pesadelo", 1], ["Festa Shugo", null]]);
+  // Loja aberta sem a oferta na lista: nada comprado ainda.
+  assert.equal(L.shardsLeft({ 990007: {} })[2].left, 35);
+  assert.equal(L.shardsLeft({ 990007: { 505015137: 35 } })[2].left, 0);
+  const c = { name: "marcoopavan", serverId: 2405 };
+  const two = L.mergeCharacter(L.mergeCharacter(null, { ...c, shopBought: { 990001: { 501015114: 47 } } }, now), { ...c, shopBought: { 990003: { 502024517: 34 } } }, now + HOUR);
+  assert.deepEqual(Object.keys(two.shopBought), ["990001", "990003"], "cada loja fica como abriu pela última vez");
+});

@@ -161,6 +161,12 @@ function renderWallet() {
     const bound = id === 930100031 && w[930100001] ? `+ ${L.fmt(w[930100001])} vinculado` : "";
     row(dl, name, L.fmt(w[id]), bound);
   }
+  // Fragmento de Estigma ainda à venda, pelas lojas já abertas.
+  const shops = L.shardsLeft(f.shopBought);
+  if (shops.some((s) => s.left != null)) {
+    const total = shops.reduce((sum, s) => sum + (s.left ?? 0), 0);
+    row(dl, "Fragmentos de Estigma à venda", String(total), shops.map((s) => `${s.name} ${s.left == null ? "?" : s.left}`).join(" · "));
+  }
   const stacks = Array.isArray(f.items) ? f.items.length : 0;
   $(".bolsa-pe").textContent = [
     stacks ? `${stacks} itens gravados` : "",
