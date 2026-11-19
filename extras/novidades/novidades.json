@@ -1,6 +1,6 @@
 {
  "aviso": "Mantido pela tarefa diária 'Novidades do Aion 2'. O bot do Telegram repassa os itens novos.",
- "atualizado": "2026-11-12",
+ "atualizado": "2026-11-19",
  "itens": [
   {
    "id": "codigo-TAKEFLIGHTAION2",
@@ -69,7 +69,7 @@
    "expira": "17/11/2026",
    "fonte": "https://senseos.gg/guides/aion-2/events-attendance-rewards/",
    "visto_em": "2026-11-12",
-   "ativo": true
+   "ativo": false
   },
   {
    "id": "evento-ludra-checkin",
@@ -79,7 +79,7 @@
    "expira": "17/11/2026",
    "fonte": "https://senseos.gg/guides/aion-2/events-attendance-rewards/",
    "visto_em": "2026-11-12",
-   "ativo": true
+   "ativo": false
   },
   {
    "id": "evento-caca-a-ludra",
@@ -110,6 +110,45 @@
    "fonte": "https://senseos.gg/guides/aion-2/events-attendance-rewards/",
    "visto_em": "2026-11-12",
    "ativo": true
+  },
+  {
+   "id": "codigo-DAEVADRESSUP",
+   "tipo": "codigo",
+   "titulo": "Código DAEVADRESSUP (até 24/11)",
+   "texto": "Dá itens de aparência e personalização. Resgate dentro do jogo: Configurações > Diversos > Conta > Inserir cupom. Vale até a manutenção da madrugada de 25/11, então use até 24/11. Saiu no aviso do Japão como válido em todos os servidores; pode não funcionar na América do Sul. Ainda não confirmado em fonte oficial.",
+   "expira": "24/11/2026",
+   "fonte": "https://endgametools.com/en/aion-2/codes",
+   "visto_em": "2026-11-19",
+   "ativo": true
+  },
+  {
+   "id": "evento-pontos-de-abismo-triplo",
+   "tipo": "evento",
+   "titulo": "Pontos de Abismo em triplo (até 15/12)",
+   "texto": "Desde a manutenção de 18/11, rendem o triplo de Pontos de Abismo: os monstros do Abismo Externo e as recompensas de vitória e de missão do Campo de Batalha. O limite de pontos não mudou e matar jogadores no Abismo não entra no bônus. Acaba na manutenção de meados de dezembro; conte com 15/12.",
+   "expira": "15/12/2026",
+   "fonte": "https://endgametools.com/en/aion-2/news/aion-2-patch-notes-november-18",
+   "visto_em": "2026-11-19",
+   "ativo": true
+  },
+  {
+   "id": "codigo-THANKSFROMAION2",
+   "tipo": "codigo",
+   "titulo": "Código THANKSFROMAION2 (até 02/03/2027)",
+   "texto": "Pacote grande, uma vez por conta: 10 Pedras de Sincronia, 15 Códices da Alma: Redefinição, 100 Baús de Mascote, 10 Baús de Visual, 5 Energias de Od, 20 Pergaminhos de Aprimoramento de Combate, 20 Bilhetes de Conclusão Imediata do Pesadelo e mais. Resgate dentro do jogo: Configurações > Diversos > Conta > Inserir cupom. Ainda não confirmado em fonte oficial.",
+   "expira": "02/03/2027",
+   "fonte": "https://endgametools.com/en/aion-2/codes",
+   "visto_em": "2026-11-19",
+   "ativo": true
+  },
+  {
+   "id": "patch-2026-11-18",
+   "tipo": "patch",
+   "titulo": "Atualização de 18/11",
+   "texto": "Ludra ganhou modo Fácil (nível de item 2.800, ressurreições ilimitadas, 2 horas) e a chance de cair equipamento de Ludra subiu de 5% para 15% em todos os modos. O kinah dos monstros de campo agora é vinculado e entra no limite diário de 1 milhão, então farmar no campo deixou de render kinah para negociar. O baú de arma de Ludra ficou mais barato (5 milhões de kinah). Nada mudou nas habilidades do Arqueiro.",
+   "fonte": "https://endgametools.com/en/aion-2/news/aion-2-patch-notes-november-18",
+   "visto_em": "2026-11-19",
+   "ativo": false
   }
  ]
 }
