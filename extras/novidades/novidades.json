@@ -1,6 +1,6 @@
 {
  "aviso": "Mantido pela tarefa diária 'Novidades do Aion 2'. O bot do Telegram repassa os itens novos.",
- "atualizado": "2026-11-19",
+ "atualizado": "2026-11-21",
  "itens": [
   {
    "id": "codigo-TAKEFLIGHTAION2",
@@ -149,6 +149,15 @@
    "fonte": "https://endgametools.com/en/aion-2/news/aion-2-patch-notes-november-18",
    "visto_em": "2026-11-19",
    "ativo": false
+  },
+  {
+   "id": "evento-mercado-mundial",
+   "tipo": "evento",
+   "titulo": "Mercado Mundial e Câmbio Mundial chegam em 25/11",
+   "texto": "Depois da manutenção de 25/11 dá para comprar e vender com jogadores de outros servidores da mesma facção e região. Só para quem tem Assinatura, com 10 anúncios de venda por dia em cada um e taxa de 20% sobre o que vender. O mercado e o câmbio do próprio servidor continuam funcionando como hoje.",
+   "fonte": "https://store.steampowered.com/news/app/3393110/view/675137971401261911",
+   "visto_em": "2026-11-21",
+   "ativo": true
   }
  ]
 }
