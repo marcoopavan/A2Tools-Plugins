@@ -1,6 +1,6 @@
 {
  "aviso": "Mantido pela tarefa diária 'Novidades do Aion 2'. O bot do Telegram repassa os itens novos.",
- "atualizado": "2026-11-21",
+ "atualizado": "2026-11-25",
  "itens": [
   {
    "id": "codigo-TAKEFLIGHTAION2",
@@ -89,7 +89,7 @@
    "expira": "24/11/2026",
    "fonte": "https://senseos.gg/guides/aion-2/events-attendance-rewards/",
    "visto_em": "2026-11-12",
-   "ativo": true
+   "ativo": false
   },
   {
    "id": "evento-chamado-de-atreia",
@@ -119,7 +119,7 @@
    "expira": "24/11/2026",
    "fonte": "https://endgametools.com/en/aion-2/codes",
    "visto_em": "2026-11-19",
-   "ativo": true
+   "ativo": false
   },
   {
    "id": "evento-pontos-de-abismo-triplo",
@@ -158,6 +158,45 @@
    "fonte": "https://store.steampowered.com/news/app/3393110/view/675137971401261911",
    "visto_em": "2026-11-21",
    "ativo": true
+  },
+  {
+   "id": "drops-daevasgiving-2026-11",
+   "tipo": "drops",
+   "titulo": "Drops da Twitch: Daevasgiving (até 09/12)",
+   "texto": "De 25/11 a 09/12. São 7 prêmios, até 10 horas assistindo: os melhores são 3 Códices da Alma: Redefinição com 8 horas e 6 Pedras de Sincronia com 10 horas. Assista a qualquer canal de Aion 2 com Drops ligado e resgate na Twitch até 23/12.",
+   "expira": "09/12/2026",
+   "fonte": "https://aion2.plaync.com/en-us/board/notice/view?articleId=6b0544009d40bac525ed406c",
+   "visto_em": "2026-11-25",
+   "ativo": true
+  },
+  {
+   "id": "evento-instalacao-corroida",
+   "tipo": "evento",
+   "titulo": "Chefe de evento Bargott: Pedras de Sincronia e Pontos de Abismo (até 15/12)",
+   "texto": "Evento novo no menu Santuário: dá para derrotar o chefe Bargott 7 vezes por semana, a partir do nível de item 2.100 (os atributos são igualados ao chefe). As moedas compram por semana até 5 Pedras de Sincronia, 100.000 Pontos de Abismo e vales de troca de equipamento do Templo do Fogo e da Gruta do Chifre Feroz. As moedas somem toda quarta, então gaste antes da manutenção.",
+   "expira": "15/12/2026",
+   "fonte": "https://endgametools.com/en/aion-2/news/aion-2-patch-notes-november-25",
+   "visto_em": "2026-11-25",
+   "ativo": true
+  },
+  {
+   "id": "evento-presenca-aurora-farta",
+   "tipo": "evento",
+   "titulo": "Presença de 14 dias e passe de Ação de Graças (até 15/12)",
+   "texto": "Lista de presença nova de 14 dias: pegue o prêmio do dia na aba de Presença; os dias 7 e 14 dão 2 Energias de Od e os dias 6 e 13 dão 2.000 Cristais da Alma. Também entrou um Passe do Daeva novo com trilha gratuita, que sobe caçando, fazendo expedições e coletando.",
+   "expira": "15/12/2026",
+   "fonte": "https://endgametools.com/en/aion-2/news/aion-2-patch-notes-november-25",
+   "visto_em": "2026-11-25",
+   "ativo": true
+  },
+  {
+   "id": "patch-2026-11-25",
+   "tipo": "patch",
+   "titulo": "Atualização de 25/11",
+   "texto": "Arqueiro melhorou: o Tiro Marcador ganhou mais chance de Perfeito na Especialização 1 (de 5% para 10%) e o Arco da Bênção recarrega em 1min30 em vez de 2min. Agora dá para equipar 5 Estigmas em vez de 4, e as missões semanais da Masmorra da Transcendência passaram a dar 12 Pedras de Sincronia por semana. Entrou uma masmorra diária nova que dá kinah vinculado (Depósito Secreto de Crobakhi), dividindo as entradas com as outras duas diárias; no Abismo, entrar pelo Corredor do Abismo corta 30% dos pontos ganhos.",
+   "fonte": "https://endgametools.com/en/aion-2/news/aion-2-patch-notes-november-25",
+   "visto_em": "2026-11-25",
+   "ativo": false
   }
  ]
 }
