@@ -1,6 +1,6 @@
 {
  "aviso": "Mantido pela tarefa diária 'Novidades do Aion 2'. O bot do Telegram repassa os itens novos.",
- "atualizado": "2026-11-25",
+ "atualizado": "2026-11-27",
  "itens": [
   {
    "id": "codigo-TAKEFLIGHTAION2",
@@ -197,6 +197,16 @@
    "fonte": "https://endgametools.com/en/aion-2/news/aion-2-patch-notes-november-25",
    "visto_em": "2026-11-25",
    "ativo": false
+  },
+  {
+   "id": "evento-caca-a-ludra-prorrogada",
+   "tipo": "evento",
+   "titulo": "Caça a Ludra prorrogada: título até 15/12",
+   "texto": "O prazo para ganhar o título de quem derrota Ludra foi estendido: agora vale concluir Ludra no Normal ou no Difícil até a manutenção de 15/12. O ranking dos primeiros grupos só sai depois que o evento acabar.",
+   "expira": "15/12/2026",
+   "fonte": "https://steamcommunity.com/app/3393110/allnews/",
+   "visto_em": "2026-11-27",
+   "ativo": true
   }
  ]
 }
